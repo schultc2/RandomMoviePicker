@@ -19,4 +19,8 @@
     <string name="streaming_service_button">Streaming Service Button</string>
     <string name="image_of_movie_poster">Image of Movie Poster</string>
     <string name="favorite_button">Favorite Button</string>
+    <string name="filters">Filters</string>
+    <string name="star_rating">Star Rating</string>
+    <string name="dash">-</string>
+    <string name="year_released">Year Released</string>
 </resources>
