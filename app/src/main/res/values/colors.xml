@@ -9,5 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="shade_of_black">#4b4e4a</color>
     <color name="background_color">#171717</color>
+    <color name="star_color">#FFD700</color>
+    <color name="silver">#2c2c2c</color>
 
 </resources>

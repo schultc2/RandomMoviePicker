@@ -37,8 +37,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:padding="5dp"
-                    android:id="@+id/netflix_filter"
-                    />
+                    android:id="@+id/netflix_filter" />
                 <ImageButton
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
@@ -48,8 +47,7 @@
                     android:src="@drawable/huluButton"
                     android:background="@color/background_color"
                     android:padding="5dp"
-                    android:id="@+id/hulu_filter"
-                    />
+                    android:id="@+id/hulu_filter" />
                 <ImageButton
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
@@ -59,8 +57,7 @@
                     android:src="@drawable/disneyButton"
                     android:background="@color/background_color"
                     android:padding="5dp"
-                    android:id="@+id/disney_filter"
-                    />
+                    android:id="@+id/disney_filter" />
                 <ImageButton
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
@@ -70,8 +67,7 @@
                     android:src="@drawable/primeButton"
                     android:background="@color/background_color"
                     android:padding="5dp"
-                    android:id="@+id/prime_filter"
-                    />
+                    android:id="@+id/prime_filter" />
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
@@ -84,80 +80,319 @@
                 android:paddingHorizontal="20dp"
                 android:paddingTop="10dp"
                 android:textSize="30sp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+
+            <RatingBar
                 android:layout_below="@id/star_rating_title"
-                android:id="@+id/star_rating_view"
-                >
-                <RatingBar
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
+                android:layout_width="wrap_content"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.1"
+                android:id="@+id/from_star_rating"
+                android:layout_marginLeft="10dp"/>
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="36dp"
+                android:layout_below="@id/star_rating_title"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_baseline_horizontal_rule_24" />
+
+            <RatingBar
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@id/star_rating_title"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    style="?android:attr/ratingBarStyleIndicator"
                     android:layout_height="wrap_content"
                     android:numStars="5"
                     android:stepSize="0.1"
-                    android:id="@+id/from_star_rating"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dash"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:textSize="50dp"/>
-                <RatingBar
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
-                    android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="0.1"
-                    android:id="@+id/to_star_rating"
-                    />
-            </LinearLayout>
+                    android:rating="5"
+                    android:progressTint="@color/star_color"
+                    android:id="@+id/to_star_rating"/>
+            <TextView
+                android:id="@+id/release_year_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/from_star_rating"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="1dp"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="10dp"
+                android:text="@string/year_released"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/year_released"
-                android:id="@+id/release_year_title"
+                android:textSize="20dp"
                 android:textColor="@color/white"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/star_rating_view"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="10dp"
-                android:textSize="30sp"/>
+                android:layout_marginHorizontal="30dp"
+                android:layout_below="@id/release_year_title"
+                android:text="@string/from"
+                android:paddingVertical="20dp"
+                android:id="@+id/from_year_label"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/from_year_drop"
+                android:layout_toRightOf="@id/from_year_label"
+                android:layout_below="@id/release_year_title"
+                android:paddingVertical="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_toLeftOf="@id/to_year_drop"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:layout_marginLeft="30dp"
+                android:layout_below="@id/release_year_title"
+                android:id="@+id/to_year_label"
+                android:text="To"
+                android:paddingVertical="20dp"/>
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/to_year_drop"
+                android:padding="20dp"
+                android:layout_below="@id/release_year_title"
+                android:layout_alignParentRight="true"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/genre_buttons"
+                android:layout_below="@id/from_year_label">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:orientation="horizontal"
-                android:layout_below="@id/star_rating_title"
-                android:id="@+id/release_year_view"
-                >
-                <RatingBar
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
+                android:layout_marginHorizontal="20dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="0.1"
-                    android:id="@+id/from_star_rating"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:text="@string/comedy"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/dash"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:textSize="50dp"/>
-                <RatingBar
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
+                    android:text="@string/sci_fi"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="0.1"
-                    android:id="@+id/to_star_rating"
-                    />
-            </LinearLayout>
+                    android:text="@string/supernatural"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/feel_good"
+                    android:textColor="@color/white"/>
+            </RadioGroup>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="20dp">
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/western"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/foreign"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action"
+                    android:textColor="@color/white"/>
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/drama"
+                    android:textColor="@color/white"/>
+            </RadioGroup>
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="20dp">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/animated"
+                        android:textSize="12sp"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/thriller"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fantasy"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/adventure"
+                        android:textColor="@color/white"/>
+                </RadioGroup>
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="20dp">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/romance"
+                        android:textSize="12sp"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/documentary"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/crime"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/horror"
+                        android:textColor="@color/white"/>
+                </RadioGroup>
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="20dp">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/family"
+                        android:textSize="12sp"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sportsr"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mystery"
+                        android:textColor="@color/white"/>
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/classic"
+                        android:textColor="@color/white"/>
+                </RadioGroup>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/maturity_rating_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/genre_buttons"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="1dp"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="10dp"
+                android:text="@string/maturity_rating"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/maturity_rating_title"
+                android:id="@+id/maturity_rating_input"
+                android:hint="@string/ex_pg_13"
+                android:textColor="@color/white"
+                android:textColorHint="@color/shade_of_black"
+                android:padding="20dp"
+                android:backgroundTint="@color/shade_of_black"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:id="@+id/actors_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/maturity_rating_input"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="1dp"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="10dp"
+                android:text="@string/actors"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/actors_title"
+                android:id="@+id/actors_input"
+                android:hint="@string/ex_tom_hanks"
+                android:textColor="@color/white"
+                android:textColorHint="@color/shade_of_black"
+                android:padding="20dp"
+                android:backgroundTint="@color/shade_of_black"
+                android:layout_marginLeft="20dp"/>
+            <TextView
+                android:id="@+id/keyword_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/actors_input"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="1dp"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="10dp"
+                android:text="@string/keyword"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/keyword_title"
+                android:id="@+id/keyword_input"
+                android:hint="@string/ex_vampire"
+                android:textColor="@color/white"
+                android:textColorHint="@color/shade_of_black"
+                android:padding="20dp"
+                android:backgroundTint="@color/shade_of_black"
+                android:layout_marginLeft="20dp"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:textSize="30sp"
+                android:text="@string/search"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/silver"
+                android:layout_below="@id/keyword_input"/>
         </RelativeLayout>
     </ScrollView>
 
