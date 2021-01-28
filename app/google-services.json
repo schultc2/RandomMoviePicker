@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "749663378737",
+    "project_id": "android-randommoviepicker",
+    "storage_bucket": "android-randommoviepicker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749663378737:android:42d4f88df943eac55d2410",
+        "android_client_info": {
+          "package_name": "edu.rosehulman.schultc2.randommoviepicker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "749663378737-h35lrkl4h0f8cpgobtaa5d8dbjiog4r4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.rosehulman.schultc2.randommoviepicker",
+            "certificate_hash": "dde86c0ff33715f4caf79cf5d4373164ef7b9663"
+          }
+        },
+        {
+          "client_id": "749663378737-dqbvnfgamcsd46ketmgo214q1g9jnjfq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXj7i96SWYIq_8BBP5ORoAko9NQBNo6WM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "749663378737-dqbvnfgamcsd46ketmgo214q1g9jnjfq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
