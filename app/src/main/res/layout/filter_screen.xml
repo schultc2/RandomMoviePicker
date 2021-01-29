@@ -23,50 +23,54 @@
                 android:textSize="50sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:orientation="horizontal"
                 android:layout_below="@id/filter_title"
                 android:id="@+id/ss_buttons"
                 android:layout_marginHorizontal="20dp">
-                <ImageButton
+                <ToggleButton
                     android:layout_height="wrap_content"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/netflixButton"
-                    android:background="@color/background_color"
+                    android:background="@drawable/netflix_toggle"
+                    android:textOn=" "
+                    android:textOff=" "
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:padding="5dp"
+                    android:layout_margin="5dp"
                     android:id="@+id/netflix_filter" />
-                <ImageButton
+                <ToggleButton
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/huluButton"
-                    android:background="@color/background_color"
-                    android:padding="5dp"
+                    android:background="@drawable/hulu_toggle"
+                    android:textOn=" "
+                    android:textOff=" "
+                    android:layout_margin="5dp"
                     android:id="@+id/hulu_filter" />
-                <ImageButton
+                <ToggleButton
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/disneyButton"
-                    android:background="@color/background_color"
-                    android:padding="5dp"
+                    android:background="@drawable/disney_toggle"
+                    android:textOn=" "
+                    android:textOff=" "
+                    android:layout_margin="5dp"
                     android:id="@+id/disney_filter" />
-                <ImageButton
+                <ToggleButton
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/primeButton"
-                    android:background="@color/background_color"
-                    android:padding="5dp"
+                    android:background="@drawable/prime_toggle"
+                    android:textOn=" "
+                    android:textOff=" "
+                    android:layout_margin="5dp"
                     android:id="@+id/prime_filter" />
             </LinearLayout>
             <TextView
@@ -134,32 +138,40 @@
                 android:text="@string/from"
                 android:paddingVertical="20dp"
                 android:id="@+id/from_year_label"/>
-            <Spinner
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/from_year_drop"
                 android:layout_toRightOf="@id/from_year_label"
                 android:layout_below="@id/release_year_title"
-                android:paddingVertical="20dp"/>
+                android:paddingVertical="20dp"
+                android:backgroundTint="@color/shade_of_black"
+                android:textColor="@color/white"
+                android:textColorHint="@color/shade_of_black"
+                android:hint="@string/_1970"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_toLeftOf="@id/to_year_drop"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="30dp"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textColor="@color/white"
                 android:layout_marginLeft="30dp"
                 android:layout_below="@id/release_year_title"
                 android:id="@+id/to_year_label"
-                android:text="To"
+                android:text="@string/to"
                 android:paddingVertical="20dp"/>
-            <Spinner
+            <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/to_year_drop"
                 android:padding="20dp"
+                android:textColor="@color/white"
                 android:layout_below="@id/release_year_title"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:textColorHint="@color/shade_of_black"
+                android:backgroundTint="@color/shade_of_black"
+                android:hint="@string/_2021"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,62 +183,71 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal"
+                android:id="@+id/radio1"
                 android:layout_marginHorizontal="20dp">
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/comedy"
+                    android:id="@+id/comedy_radio"
                     android:textSize="12sp"
                     android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sci_fi"
+                    android:id="@+id/scifi_radio"
                     android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/supernatural"
+                    android:id="@+id/supernatural_radio"
                     android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/feel_good"
+                    android:id="@+id/feelgood_radio"
                     android:textColor="@color/white"/>
             </RadioGroup>
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal"
+                android:id="@+id/radio2"
                 android:layout_marginHorizontal="20dp">
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/western"
                     android:textSize="12sp"
+                    android:id="@+id/western_radio"
                     android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/foreign"
+                    android:id="@+id/foreign_radio"
                     android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/action"
+                    android:id="@+id/action_radio"
                     android:textColor="@color/white"/>
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/drama"
+                    android:id="@+id/drama_radio"
                     android:textColor="@color/white"/>
             </RadioGroup>
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
+                    android:id="@+id/radio3"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="20dp">
@@ -235,27 +256,31 @@
                         android:layout_height="wrap_content"
                         android:text="@string/animated"
                         android:textSize="12sp"
+                        android:id="@+id/animated_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/thriller"
+                        android:id="@+id/thriller_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/fantasy"
+                        android:id="@+id/fantasy_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/adventure"
+                        android:id="@+id/adventure_radio"
                         android:textColor="@color/white"/>
                 </RadioGroup>
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
+                    android:id="@+id/radio4"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="20dp">
@@ -264,27 +289,31 @@
                         android:layout_height="wrap_content"
                         android:text="@string/romance"
                         android:textSize="12sp"
+                        android:id="@+id/romance_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/documentary"
+                        android:id="@+id/documentary_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/crime"
+                        android:id="@+id/crime_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/horror"
+                        android:id="@+id/horror_radio"
                         android:textColor="@color/white"/>
                 </RadioGroup>
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
+                    android:id="@+id/radio5"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="20dp">
@@ -293,21 +322,25 @@
                         android:layout_height="wrap_content"
                         android:text="@string/family"
                         android:textSize="12sp"
+                        android:id="@+id/family_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/sportsr"
+                        android:text="@string/sports"
+                        android:id="@+id/sports_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mystery"
+                        android:id="@+id/mystery_radio"
                         android:textColor="@color/white"/>
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/classic"
+                        android:id="@+id/classic_radio"
                         android:textColor="@color/white"/>
                 </RadioGroup>
             </LinearLayout>
@@ -388,6 +421,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="30dp"
                 android:layout_centerHorizontal="true"
+                android:id="@+id/search_button"
                 android:textSize="30sp"
                 android:text="@string/search"
                 android:textColor="@color/white"
