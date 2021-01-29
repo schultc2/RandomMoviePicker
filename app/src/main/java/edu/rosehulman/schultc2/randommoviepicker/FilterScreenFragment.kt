@@ -73,19 +73,19 @@ class FilterScreenFragment: Fragment() {
         val radioGroup4 : RadioGroup? = rootView?.findViewById(R.id.radio4) ?: null
         val radioGroup5 : RadioGroup? = rootView?.findViewById(R.id.radio5) ?: null
 
-        for( i in 0..(radioGroup1?.getChildCount() ?: 0)){
+        for( i in 0 until (radioGroup1?.childCount ?: 0)){
             genres.add(radioGroup1?.getChildAt(i) as RadioButton)
         }
-        for( i in 0..(radioGroup2?.getChildCount() ?: 0)){
+        for( i in 0 until (radioGroup2?.childCount ?: 0)){
             genres.add(radioGroup2?.getChildAt(i) as RadioButton)
         }
-        for( i in 0..(radioGroup3?.getChildCount() ?: 0)){
+        for( i in 0 until (radioGroup3?.childCount ?: 0)){
             genres.add(radioGroup3?.getChildAt(i) as RadioButton)
         }
-        for( i in 0..(radioGroup4?.getChildCount() ?: 0)){
+        for( i in 0 until (radioGroup4?.childCount ?: 0)){
             genres.add(radioGroup4?.getChildAt(i) as RadioButton)
         }
-        for( i in 0..(radioGroup5?.getChildCount() ?: 0)){
+        for( i in 0 until (radioGroup5?.childCount ?: 0)){
             genres.add(radioGroup5?.getChildAt(i) as RadioButton)
         }
 

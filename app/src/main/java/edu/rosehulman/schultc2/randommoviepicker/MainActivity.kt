@@ -2,6 +2,7 @@ package edu.rosehulman.schultc2.randommoviepicker
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -17,11 +18,12 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener 
         ft.commit()
     }
 
-    override fun replaceFragment(frag: Fragment) {
+    override fun replaceFragment(fragment: Fragment) {
+        Log.d(Constants.TAG,"Segue to Filter Screen")
         val fragmentManager: FragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, frag, android.R.attr.fragment.toString())
-        fragmentTransaction.addToBackStack(android.R.attr.fragment.toString())
+        fragmentTransaction.replace(R.id.fragment_container, fragment, fragment.toString())
+        fragmentTransaction.addToBackStack(fragment.toString())
         fragmentTransaction.commit()
     }
 
