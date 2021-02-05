@@ -206,7 +206,7 @@ class FilterScreenFragment: Fragment() {
             disneySelected = disneyButton?.isSelected ?: false
 
             //Filter Rating
-            var myRating = currMovie.rating.toFloat()
+            //var myRating = currMovie.rating.toFloat()
 
             var goodRating = true
 
@@ -218,16 +218,16 @@ class FilterScreenFragment: Fragment() {
             toYear = toYearEditText?.text.toString().toInt() ?:2021
 
             //Maturity Rating
-            var matureRating = getComparableRating(currMovie.age)
+            var matureRating = getComparableRating(currMovie.age!!)
             var filteredMatureRating = getComparableRating(maturityEditText.toString())
             var goodMaturity = true
 
             if(!(((currMovie.netflix == 1) && netflixSelected) || ((currMovie.disney == 1) && disneySelected) || ((currMovie.hulu == 1) && huluSelected) || ((currMovie.prime == 1) && primeSelected))){
                 goodService = false
             }
-            else if (!(myRating >= fromRating) && (myRating <= toRating)){
-                goodRating = false
-            }
+//            else if (!(myRating >= fromRating) && (myRating <= toRating)){
+//                goodRating = false
+//            }
             else if (!(myYear >= fromYear!!) && (myYear <= toYear!!)){
                 goodYear = false
             }

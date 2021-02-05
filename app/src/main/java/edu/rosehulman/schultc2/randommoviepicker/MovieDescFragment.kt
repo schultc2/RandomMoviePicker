@@ -119,7 +119,7 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
         maturityView?.text = maturityRating
 
         //Display RatingBar
-        ratingBar?.setRating(movieWrapper?.movie?.rating!!.toFloat())
+        //ratingBar?.setRating(movieWrapper?.movie?.rating!!.toFloat())
 
         //Display directors
         directorView?.text = "Director: ${movieWrapper?.movie?.directors.toString()}"
