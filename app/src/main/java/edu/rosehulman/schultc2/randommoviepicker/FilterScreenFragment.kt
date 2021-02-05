@@ -1,6 +1,7 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import com.google.firebase.firestore.Query
 class FilterScreenFragment: Fragment() {
 
     private var listener: FilterMovieListener? = null
-    private var genres: ArrayList<RadioButton> = arrayListOf()
+    private var genres: ArrayList<CheckBox> = arrayListOf()
     private var netflixSelected: Boolean = false
     private var primeSelected: Boolean = false
     private var huluSelected: Boolean = false
@@ -67,48 +68,72 @@ class FilterScreenFragment: Fragment() {
 
 
         //Genre Radio Buttons
-        val radioGroup1 : RadioGroup? = rootView?.findViewById(R.id.radio1) ?: null
-        val radioGroup2 : RadioGroup? = rootView?.findViewById(R.id.radio2) ?: null
-        val radioGroup3 : RadioGroup? = rootView?.findViewById(R.id.radio3) ?: null
-        val radioGroup4 : RadioGroup? = rootView?.findViewById(R.id.radio4) ?: null
-        val radioGroup5 : RadioGroup? = rootView?.findViewById(R.id.radio5) ?: null
+//        val radioGroup1 : RadioGroup? = rootView?.findViewById(R.id.radio1) ?: null
+//        val radioGroup2 : RadioGroup? = rootView?.findViewById(R.id.radio2) ?: null
+//        val radioGroup3 : RadioGroup? = rootView?.findViewById(R.id.radio3) ?: null
+//        val radioGroup4 : RadioGroup? = rootView?.findViewById(R.id.radio4) ?: null
+//        val radioGroup5 : RadioGroup? = rootView?.findViewById(R.id.radio5) ?: null
 
-        for( i in 0 until (radioGroup1?.childCount ?: 0)){
-            genres.add(radioGroup1?.getChildAt(i) as RadioButton)
-        }
-        for( i in 0 until (radioGroup2?.childCount ?: 0)){
-            genres.add(radioGroup2?.getChildAt(i) as RadioButton)
-        }
-        for( i in 0 until (radioGroup3?.childCount ?: 0)){
-            genres.add(radioGroup3?.getChildAt(i) as RadioButton)
-        }
-        for( i in 0 until (radioGroup4?.childCount ?: 0)){
-            genres.add(radioGroup4?.getChildAt(i) as RadioButton)
-        }
-        for( i in 0 until (radioGroup5?.childCount ?: 0)){
-            genres.add(radioGroup5?.getChildAt(i) as RadioButton)
-        }
+//        for( i in 0 until (radioGroup1?.childCount ?: 0)){
+//            genres.add(radioGroup1?.getChildAt(i) as RadioButton)
+//        }
+//        for( i in 0 until (radioGroup2?.childCount ?: 0)){
+//            genres.add(radioGroup2?.getChildAt(i) as RadioButton)
+//        }
+//        for( i in 0 until (radioGroup3?.childCount ?: 0)){
+//            genres.add(radioGroup3?.getChildAt(i) as RadioButton)
+//        }
+//        for( i in 0 until (radioGroup4?.childCount ?: 0)){
+//            genres.add(radioGroup4?.getChildAt(i) as RadioButton)
+//        }
+//        for( i in 0 until (radioGroup5?.childCount ?: 0)){
+//            genres.add(radioGroup5?.getChildAt(i) as RadioButton)
+//        }
 
-//        val comedyRadio : RadioButton? = rootView?.findViewById(R.id.comedy_radio) ?: null
-//        val scifiRadio : RadioButton? = rootView?.findViewById(R.id.scifi_radio) ?: null
-//        val supernaturalRadio : RadioButton? = rootView?.findViewById(R.id.supernatural_radio) ?: null
-//        val feelgoodRadio : RadioButton? = rootView?.findViewById(R.id.feelgood_radio) ?: null
-//        val westernRadio : RadioButton? = rootView?.findViewById(R.id.western_radio) ?: null
-//        val foreignRadio : RadioButton? = rootView?.findViewById(R.id.foreign_radio) ?: null
-//        val actionRadio : RadioButton? = rootView?.findViewById(R.id.action_radio) ?: null
-//        val dramaRadio : RadioButton? = rootView?.findViewById(R.id.drama_radio) ?: null
-//        val animatedRadio : RadioButton? = rootView?.findViewById(R.id.animated_radio) ?: null
-//        val thrillerRadio : RadioButton? = rootView?.findViewById(R.id.thriller_radio) ?: null
-//        val fantasyRadio : RadioButton? = rootView?.findViewById(R.id.fantasy_radio) ?: null
-//        val adventureRadio : RadioButton? = rootView?.findViewById(R.id.adventure_radio) ?: null
-//        val romanceRadio : RadioButton? = rootView?.findViewById(R.id.romance_radio) ?: null
-//        val docuRadio : RadioButton? = rootView?.findViewById(R.id.documentary_radio) ?: null
-//        val crimeRadio : RadioButton? = rootView?.findViewById(R.id.crime_radio) ?: null
-//        val horrorRadio : RadioButton? = rootView?.findViewById(R.id.horror_radio) ?: null
-//        val familyRadio : RadioButton? = rootView?.findViewById(R.id.family_radio) ?: null
-//        val sportsRadio : RadioButton? = rootView?.findViewById(R.id.sports_radio) ?: null
-//        val mysteryRadio : RadioButton? = rootView?.findViewById(R.id.mystery_radio) ?: null
-//        val classicRadio : RadioButton? = rootView?.findViewById(R.id.classic_radio) ?: null
+        val comedyRadio : CheckBox? = rootView?.findViewById(R.id.comedy_radio) ?: null
+        val scifiRadio : CheckBox? = rootView?.findViewById(R.id.scifi_radio) ?: null
+        val supernaturalRadio : CheckBox? = rootView?.findViewById(R.id.supernatural_radio) ?: null
+        val feelgoodRadio : CheckBox? = rootView?.findViewById(R.id.feelgood_radio) ?: null
+        val westernRadio : CheckBox? = rootView?.findViewById(R.id.western_radio) ?: null
+        val foreignRadio : CheckBox? = rootView?.findViewById(R.id.foreign_radio) ?: null
+        val actionRadio : CheckBox? = rootView?.findViewById(R.id.action_radio) ?: null
+        val dramaRadio : CheckBox? = rootView?.findViewById(R.id.drama_radio) ?: null
+        val animatedRadio : CheckBox? = rootView?.findViewById(R.id.animated_radio) ?: null
+        val thrillerRadio : CheckBox? = rootView?.findViewById(R.id.thriller_radio) ?: null
+        val fantasyRadio : CheckBox? = rootView?.findViewById(R.id.fantasy_radio) ?: null
+        val adventureRadio : CheckBox? = rootView?.findViewById(R.id.adventure_radio) ?: null
+        val romanceRadio : CheckBox? = rootView?.findViewById(R.id.romance_radio) ?: null
+        val docuRadio : CheckBox? = rootView?.findViewById(R.id.documentary_radio) ?: null
+        val crimeRadio : CheckBox? = rootView?.findViewById(R.id.crime_radio) ?: null
+        val horrorRadio : CheckBox? = rootView?.findViewById(R.id.horror_radio) ?: null
+        val familyRadio : CheckBox? = rootView?.findViewById(R.id.family_radio) ?: null
+        val sportsRadio : CheckBox? = rootView?.findViewById(R.id.sports_radio) ?: null
+        val mysteryRadio : CheckBox? = rootView?.findViewById(R.id.mystery_radio) ?: null
+        val classicRadio : CheckBox? = rootView?.findViewById(R.id.classic_radio) ?: null
+
+        genres.add(comedyRadio!!)
+        genres.add(scifiRadio!!)
+        genres.add(supernaturalRadio!!)
+        genres.add(feelgoodRadio!!)
+        genres.add(westernRadio!!)
+        genres.add(foreignRadio!!)
+        genres.add(actionRadio!!)
+        genres.add(dramaRadio!!)
+        genres.add(animatedRadio!!)
+        genres.add(thrillerRadio!!)
+        genres.add(fantasyRadio!!)
+        genres.add(adventureRadio!!)
+        genres.add(romanceRadio!!)
+        genres.add(docuRadio!!)
+        genres.add(crimeRadio!!)
+        genres.add(horrorRadio!!)
+        genres.add(familyRadio!!)
+        genres.add(sportsRadio!!)
+        genres.add(mysteryRadio!!)
+        genres.add(classicRadio!!)
+
+
+
 
         //Maturity Rating Input
         val maturityEditText : EditText? = rootView?.findViewById(R.id.maturity_rating_input) ?: null
@@ -147,4 +172,6 @@ class FilterScreenFragment: Fragment() {
     interface FilterMovieListener {
         fun getMovieFragment(frag: Fragment)
     }
+
+
 }

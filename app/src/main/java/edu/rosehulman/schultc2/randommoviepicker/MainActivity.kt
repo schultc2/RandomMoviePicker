@@ -1,8 +1,10 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -25,6 +27,14 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener 
         fragmentTransaction.replace(R.id.fragment_container, fragment, fragment.toString())
         fragmentTransaction.addToBackStack(fragment.toString())
         fragmentTransaction.commit()
+    }
+
+    private fun closeKeyBoard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 
 }

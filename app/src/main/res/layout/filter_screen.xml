@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_color">
     <ScrollView
         android:layout_width="match_parent"
@@ -85,40 +85,43 @@
                 android:paddingTop="10dp"
                 android:textSize="30sp"/>
 
-            <RatingBar
-                android:layout_below="@id/star_rating_title"
-                android:layout_width="wrap_content"
-                style="?android:attr/ratingBarStyleIndicator"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="0.1"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:id="@+id/ratingView"
+                android:layout_below="@id/star_rating_title">
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
                 android:id="@+id/from_star_rating"
-                android:layout_marginLeft="10dp"/>
+                style="@style/MyRatingBar"
+                android:scaleX="0.75"
+                android:scaleY="0.75"
+               />
 
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="36dp"
-                android:layout_below="@id/star_rating_title"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_baseline_horizontal_rule_24" />
-
+                android:id="@+id/dashimage"
+                android:src="@drawable/ic_baseline_horizontal_rule_24"
+                />
             <RatingBar
-                    android:layout_marginRight="10dp"
-                    android:layout_below="@id/star_rating_title"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    style="?android:attr/ratingBarStyleIndicator"
-                    android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="0.1"
-                    android:rating="5"
-                    android:progressTint="@color/star_color"
-                    android:id="@+id/to_star_rating"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:id="@+id/to_star_rating"
+                style="@style/MyRatingBar"
+                android:scaleX="0.75"
+                android:scaleY="0.75"/>
+            </LinearLayout>
             <TextView
                 android:id="@+id/release_year_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/from_star_rating"
+                android:layout_below="@id/ratingView"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="1dp"
@@ -147,6 +150,7 @@
                 android:paddingVertical="20dp"
                 android:backgroundTint="@color/shade_of_black"
                 android:textColor="@color/white"
+                android:inputType="number"
                 android:textColorHint="@color/shade_of_black"
                 android:hint="@string/_1970"/>
             <TextView
@@ -167,183 +171,195 @@
                 android:id="@+id/to_year_drop"
                 android:padding="20dp"
                 android:textColor="@color/white"
+                android:inputType="number"
                 android:layout_below="@id/release_year_title"
                 android:layout_alignParentRight="true"
                 android:textColorHint="@color/shade_of_black"
                 android:backgroundTint="@color/shade_of_black"
                 android:hint="@string/_2021"/>
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:id="@+id/genre_buttons"
                 android:layout_below="@id/from_year_label">
-            <RadioGroup
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal"
                 android:id="@+id/radio1"
                 android:layout_marginHorizontal="20dp">
-                <RadioButton
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/comedy"
                     android:id="@+id/comedy_radio"
                     android:textSize="12sp"
                     android:textColor="@color/white"/>
-                <RadioButton
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sci_fi"
                     android:id="@+id/scifi_radio"
                     android:textColor="@color/white"/>
-                <RadioButton
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/drama"
+                    android:id="@+id/drama_radio"
+                    android:textColor="@color/white"/>
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/supernatural"
                     android:id="@+id/supernatural_radio"
                     android:textColor="@color/white"/>
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/feel_good"
-                    android:id="@+id/feelgood_radio"
-                    android:textColor="@color/white"/>
-            </RadioGroup>
-            <RadioGroup
+            </TableRow>
+            <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal"
                 android:id="@+id/radio2"
                 android:layout_marginHorizontal="20dp">
-                <RadioButton
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/western"
                     android:textSize="12sp"
                     android:id="@+id/western_radio"
                     android:textColor="@color/white"/>
-                <RadioButton
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="12sp"
                     android:text="@string/foreign"
                     android:id="@+id/foreign_radio"
                     android:textColor="@color/white"/>
-                <RadioButton
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="12sp"
                     android:text="@string/action"
                     android:id="@+id/action_radio"
                     android:textColor="@color/white"/>
-                <RadioButton
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/drama"
-                    android:id="@+id/drama_radio"
+                    android:textSize="12sp"
+                    android:text="@string/feel_good"
+                    android:id="@+id/feelgood_radio"
                     android:textColor="@color/white"/>
-            </RadioGroup>
-                <RadioGroup
+            </TableRow>
+                <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/radio3"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="20dp">
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/animated"
                         android:textSize="12sp"
                         android:id="@+id/animated_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/thriller"
+                        android:textSize="12sp"
                         android:id="@+id/thriller_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/fantasy"
+                        android:textSize="12sp"
                         android:id="@+id/fantasy_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/adventure"
+                        android:textSize="12sp"
                         android:id="@+id/adventure_radio"
                         android:textColor="@color/white"/>
-                </RadioGroup>
-                <RadioGroup
+                </TableRow>
+                <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/radio4"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="20dp">
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/romance"
                         android:textSize="12sp"
                         android:id="@+id/romance_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/documentary"
-                        android:id="@+id/documentary_radio"
-                        android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/crime"
+                        android:textSize="12sp"
                         android:id="@+id/crime_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/horror"
+                        android:textSize="12sp"
                         android:id="@+id/horror_radio"
                         android:textColor="@color/white"/>
-                </RadioGroup>
-                <RadioGroup
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/documentary"
+                        android:textSize="12sp"
+                        android:id="@+id/documentary_radio"
+                        android:textColor="@color/white"/>
+                </TableRow>
+                <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/radio5"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="20dp">
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/family"
                         android:textSize="12sp"
                         android:id="@+id/family_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sports"
+                        android:textSize="12sp"
                         android:id="@+id/sports_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mystery"
+                        android:textSize="12sp"
                         android:id="@+id/mystery_radio"
                         android:textColor="@color/white"/>
-                    <RadioButton
+                    <CheckBox
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/classic"
+                        android:textSize="12sp"
                         android:id="@+id/classic_radio"
                         android:textColor="@color/white"/>
-                </RadioGroup>
-            </LinearLayout>
+                </TableRow>
+            </TableLayout>
             <TextView
                 android:id="@+id/maturity_rating_title"
                 android:layout_width="wrap_content"
