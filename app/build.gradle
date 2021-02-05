@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.1.0'
     implementation 'com.google.firebase:firebase-auth:20.0.1'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    implementation 'com.borjabravo:simpleratingbar:1.0.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
 }
 apply plugin: 'com.google.gms.google-services'

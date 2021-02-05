@@ -1,6 +1,5 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +9,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
 
 private const val ARG_MOVIE = "movie"
 
@@ -19,11 +19,10 @@ private const val ARG_MOVIE = "movie"
 class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 
     private var movieWrapper: MovieWrapper? = null
-    private var saved_title: String? = null
 
 
     companion object {
-        fun newInstance(movie: MovieWrapper) =
+        fun newInstance(movie: Movie) =
             MovieDescFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_MOVIE, movie)
@@ -33,7 +32,7 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        movieWrapper = arguments?.getParcelable(ARG_MOVIE)
+        movieWrapper?.movie = arguments?.getParcelable(ARG_MOVIE)
         if(movieWrapper != null){
             val urlString = " http://www.omdbapi.com/?t=${movieWrapper?.movie?.title}&plot=full&apikey=7e1d379f"
             GetMovieTask(this).execute(urlString)
@@ -45,6 +44,8 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //Initialize all the views from the MovieDescScreeb
         val root = inflater.inflate(R.layout.movie_desc_screen, container, false)
         val ssImageView: ImageView? = view?.findViewById(R.id.avail_ss) ?: null
         val posterImageView: ImageView? = view?.findViewById(R.id.movie_poster) ?: null
@@ -59,9 +60,78 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
         val descView: TextView? = view?.findViewById(R.id.desc_text) ?: null
         val trailerView: VideoView? = view?.findViewById(R.id.trailer_view) ?: null
 
-        //textView?.text = " "
+
+        //Display the Streaming service the movie is available on
+        if(movieWrapper?.movie?.netflix == 1){
+            ssImageView?.setImageResource(R.drawable.netflix_button)
+        } else if(movieWrapper?.movie?.disney == 1){
+            ssImageView?.setImageResource(R.drawable.disney_button)
+        } else if(movieWrapper?.movie?.hulu == 1){
+            ssImageView?.setImageResource(R.drawable.hulu_button)
+        } else if(movieWrapper?.movie?.prime == 1){
+            ssImageView?.setImageResource(R.drawable.prime_button)
+        }
+
+        //Display Poster Image
+        Picasso.with(context).load(movieWrapper?.poster).into(posterImageView)
+
+        //Display Title View
         titleView?.text = movieWrapper?.movie?.title
-        //imageView?.setImageBitmap(movieWrapper?.image)
+
+        //Display Genres Text
+        genresView?.text = movieWrapper?.movie?.genres
+
+        //Display Year Released
+        yearView?.text = "Released: ${movieWrapper?.movie?.year.toString()}"
+
+        //Display runtime
+        runtimeView?.text = "${movieWrapper?.movie?.runtime.toString()} min"
+
+        //Display Maturity Rating
+        var maturityRating: String = ""
+        when(movieWrapper?.movie?.age){
+            "all" -> {
+                maturityRating = "Rated: G"
+                true
+            }
+            "13+" -> {
+                maturityRating = "Rated: PG-13"
+                true
+            }
+            "18+" -> {
+                maturityRating = "Rated: R"
+                true
+            }
+            "7+" -> {
+                maturityRating = "Rated: G"
+                true
+            }
+            "16+" -> {
+                maturityRating = "Rated: R"
+                true
+            }
+            else -> {
+                maturityRating = "Rated: N/A"
+                true
+            }
+        }
+
+        maturityView?.text = maturityRating
+
+        //Display RatingBar
+        ratingBar?.setRating(movieWrapper?.movie?.rating!!.toFloat())
+
+        //Display directors
+        directorView?.text = "Director: ${movieWrapper?.movie?.directors.toString()}"
+
+        //Display Actors
+        actorsView?.text = movieWrapper?.actors
+
+        //Display Description
+        descView?.text = movieWrapper?.plot
+
+        //TODO: Figure out how to get and display a video trailer
+
         return root
     }
 
@@ -77,11 +147,12 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
     }
 
     override fun onMovieLoaded(movie: Movie?) {
-        movieWrapper?.movie = movie
+          movieWrapper?.movie = movie
 //        val textView: TextView? = view?.findViewById(R.id.section_label) ?: null
 //        section_label.text = comic?.safe_title
 //        saved_title = comic?.safe_title
 //        GetImageTask(this).execute(comic!!.img)
+
     }
 
 

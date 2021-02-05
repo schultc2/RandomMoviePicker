@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 
-class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener {
+class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener, FilterScreenFragment.FilterMovieListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,6 +35,16 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener 
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    override fun getMovieFragment(movie: Movie) {
+        Log.d(Constants.TAG,"Segue to Movie Desc Screen")
+        val frag = MovieDescFragment.newInstance(movie)
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
+        fragmentTransaction.addToBackStack(frag.toString())
+        fragmentTransaction.commit()
     }
 
 }

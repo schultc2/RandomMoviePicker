@@ -33,5 +33,4 @@ class GetMovieTask(private var movieConsumer: MovieConsumer): AsyncTask<String, 
     interface MovieConsumer {
         fun onMovieLoaded(movie: Movie?)
     }
-
 }

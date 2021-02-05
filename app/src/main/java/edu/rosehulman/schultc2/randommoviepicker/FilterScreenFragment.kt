@@ -1,5 +1,6 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -21,15 +23,31 @@ class FilterScreenFragment: Fragment() {
     private var disneySelected: Boolean = false
     private var fromRating: Double = 0.0
     private var toRating: Double = 5.0
-    private var fromYear: String? = "1970"
-    private var toYear: String? = "2021"
+    private var fromYear: Int? = 1970
+    private var toYear: Int? = 2021
     private var maturity: String? = null
     private var actors: String?  = null
     private var keyword: String? = null
-    private val movies = ArrayList<Movie>()
+    private var movies = ArrayList<Movie>()
 
+    private var netflixButton: ToggleButton? = null
+    private var primeButton: ToggleButton? = null
+    private var disneyButton: ToggleButton? = null
+    private var huluButton: ToggleButton? = null
 
-    override fun onCreateView(
+    var fromRatingBar: RatingBar? = null
+    var toRatingBar: RatingBar? = null
+
+    var fromYearEditText : EditText? = null
+    var toYearEditText : EditText? = null
+
+    var maturityEditText : EditText? = null
+
+    var actorsEditText : EditText? = null
+
+    var keywordEditText : EditText? = null
+
+        override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
@@ -38,10 +56,10 @@ class FilterScreenFragment: Fragment() {
         val rootView = inflater.inflate(R.layout.filter_screen, container, false)
 
         //Streaming service buttons
-        val netflixButton: ToggleButton? = rootView?.findViewById(R.id.netflix_filter) ?: null
-        val primeButton: ToggleButton? = rootView?.findViewById(R.id.prime_filter) ?: null
-        val huluButton: ToggleButton? = rootView?.findViewById(R.id.hulu_filter) ?: null
-        val disneyButton: ToggleButton? = rootView?.findViewById(R.id.disney_filter) ?: null
+        netflixButton= rootView?.findViewById(R.id.netflix_filter) ?: null
+        primeButton= rootView?.findViewById(R.id.prime_filter) ?: null
+        huluButton= rootView?.findViewById(R.id.hulu_filter) ?: null
+        disneyButton = rootView?.findViewById(R.id.disney_filter) ?: null
 
         netflixSelected = netflixButton?.isSelected ?: false
         primeSelected = primeButton?.isSelected ?: false
@@ -50,8 +68,8 @@ class FilterScreenFragment: Fragment() {
 
 
         //RatingBars
-        val fromRatingBar: RatingBar? = rootView?.findViewById(R.id.from_star_rating) ?: null
-        val toRatingBar: RatingBar? = rootView?.findViewById(R.id.to_star_rating) ?: null
+        fromRatingBar = rootView?.findViewById(R.id.from_star_rating) ?: null
+        toRatingBar  = rootView?.findViewById(R.id.to_star_rating) ?: null
 
         fromRatingBar!!.setOnRatingBarChangeListener { ratingBar, fl, b ->
             fromRating = ratingBar.rating.toDouble()
@@ -62,8 +80,9 @@ class FilterScreenFragment: Fragment() {
 
 
         //Year Input
-        val fromYearEditText : EditText? = rootView?.findViewById(R.id.from_year_drop) ?: null
-        val toYearEditText : EditText? = rootView?.findViewById(R.id.to_year_drop) ?: null
+        fromYearEditText = rootView?.findViewById(R.id.from_year_drop) ?: null
+        toYearEditText = rootView?.findViewById(R.id.to_year_drop) ?: null
+
 
 
 
@@ -136,41 +155,154 @@ class FilterScreenFragment: Fragment() {
 
 
         //Maturity Rating Input
-        val maturityEditText : EditText? = rootView?.findViewById(R.id.maturity_rating_input) ?: null
+        maturityEditText = rootView?.findViewById(R.id.maturity_rating_input) ?: null
 
         //Actors Input
-        val actorsEditText : EditText? = rootView?.findViewById(R.id.actors_input) ?: null
+        actorsEditText = rootView?.findViewById(R.id.actors_input) ?: null
 
         //Keyword Input
-        val keywordEditText : EditText? = rootView?.findViewById(R.id.keyword_input) ?: null
-
+        keywordEditText = rootView?.findViewById(R.id.keyword_input) ?: null
 
         val searchButton: Button? = rootView?.findViewById(R.id.search_button) ?: null
 
         searchButton?.setOnClickListener {
-            getRandomMovie()
+            grabAllMovies()
         }
 
         return rootView
     }
 
-    private fun getRandomMovie(){
+    private fun grabAllMovies(){
         val moviesRef : CollectionReference = FirebaseFirestore
                 .getInstance()
-                .collection("Movies")
-        val query = moviesRef.orderBy("ID", Query.Direction.DESCENDING)
+                .collection("FormattedMovies")
+        val query = moviesRef.orderBy("id", Query.Direction.DESCENDING)
         query.addSnapshotListener { querySnapshot, error ->
-
+            if(error != null){
+                Log.e(Constants.TAG, "Error getting movies: $error")
+                return@addSnapshotListener
+            }
+            movies.removeAll(movies)
+            querySnapshot?.documents?.forEach { documentSnapshot: DocumentSnapshot ->
+                movies.add(Movie.fromSnapshot(documentSnapshot))
+            }
+            getFilteredMovie(moviesRef)
         }
+    }
 
+    private fun getFilteredMovie(moviesRef : CollectionReference){
+        Log.d(Constants.TAG,"Filtering Movies")
+        var goodMovies = ArrayList<Movie>()
+        if(movies.isEmpty()){
+            Log.d(Constants.TAG,"Movies is empty")
+        }
+        for(currMovie in movies){
+            //Filter Streaming Service
+            var goodService = true
+            Log.d(Constants.TAG,"Currently Checking $currMovie.title")
+            netflixSelected = netflixButton?.isSelected ?: false
+            primeSelected = primeButton?.isSelected ?: false
+            huluSelected = huluButton?.isSelected ?: false
+            disneySelected = disneyButton?.isSelected ?: false
+
+            //Filter Rating
+            var myRating = currMovie.rating.toFloat()
+
+            var goodRating = true
+
+            //Filter year
+            var myYear = currMovie.year.toInt()
+            var goodYear = true
+
+            fromYear = fromYearEditText?.text.toString().toInt() ?:1970
+            toYear = toYearEditText?.text.toString().toInt() ?:2021
+
+            //Maturity Rating
+            var matureRating = getComparableRating(currMovie.age)
+            var filteredMatureRating = getComparableRating(maturityEditText.toString())
+            var goodMaturity = true
+
+            if(!(((currMovie.netflix == 1) && netflixSelected) || ((currMovie.disney == 1) && disneySelected) || ((currMovie.hulu == 1) && huluSelected) || ((currMovie.prime == 1) && primeSelected))){
+                goodService = false
+            }
+            else if (!(myRating >= fromRating) && (myRating <= toRating)){
+                goodRating = false
+            }
+            else if (!(myYear >= fromYear!!) && (myYear <= toYear!!)){
+                goodYear = false
+            }
+            else if (!(matureRating <= filteredMatureRating)){
+                goodMaturity = false
+            }
+
+            //Filter Genres
+            var goodGenre = true
+
+            for(genre in genres){
+                if(genre.isChecked){
+                    if(!currMovie.genres.contains(genre.text)){
+                        goodGenre = false
+                    }
+                }
+            }
+
+            if(goodService && goodYear && goodGenre && goodRating && goodMaturity){
+                goodMovies.add(currMovie)
+            }
+        }
+        switchToRandomMovieDesc(goodMovies)
+    }
+
+    private fun switchToRandomMovieDesc(goodMovies : ArrayList<Movie>){
+        if(goodMovies.isNotEmpty()){
+            val randomMovie = goodMovies.random()
+            listener?.getMovieFragment(randomMovie)
+        }
+    }
+
+    private fun getComparableRating(rating : String): Int {
+        when(rating){
+            "all" -> {
+                return 0
+            }
+            "13+" -> {
+                return 2
+            }
+            "18+" -> {
+                return 3
+            }
+            "7+" -> {
+                return 1
+            }
+            "16+" -> {
+                return 3
+            }
+            else -> {
+                return 3
+            }
+        }
     }
 
     private fun getAllMovies(){
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if( context is FilterMovieListener){
+            listener = context
+        } else{
+            throw RuntimeException(context.toString() + "must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
     interface FilterMovieListener {
-        fun getMovieFragment(frag: Fragment)
+        fun getMovieFragment(movie: Movie)
     }
 
 
