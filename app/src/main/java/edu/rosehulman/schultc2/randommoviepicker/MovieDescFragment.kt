@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.VideoView
 import androidx.fragment.app.Fragment
 
 private const val ARG_MOVIE = "movie"
@@ -14,7 +16,7 @@ private const val ARG_MOVIE = "movie"
 /**
  * A placeholder fragment containing a simple view.
  */
-class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, {
+class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 
     private var movieWrapper: MovieWrapper? = null
     private var saved_title: String? = null
@@ -49,11 +51,17 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, {
         val titleView: TextView? = view?.findViewById(R.id.movie_title) ?: null
         val genresView: TextView? = view?.findViewById(R.id.movie_genres) ?: null
         val yearView: TextView? = view?.findViewById(R.id.release_year_text) ?: null
-
+        val runtimeView: TextView? = view?.findViewById(R.id.movie_length_text) ?: null
+        val maturityView: TextView? = view?.findViewById(R.id.maturity_rating_text) ?: null
+        val ratingBar: RatingBar? = view?.findViewById(R.id.star_rating_bar) ?: null
+        val directorView: TextView? = view?.findViewById(R.id.director_text) ?: null
+        val actorsView: TextView? = view?.findViewById(R.id.actor_text) ?: null
+        val descView: TextView? = view?.findViewById(R.id.desc_text) ?: null
+        val trailerView: VideoView? = view?.findViewById(R.id.trailer_view) ?: null
 
         //textView?.text = " "
-        textView?.text = movieWrapper?.movie?.safe_titlec
-        imageView?.setImageBitmap(movieWrapper?.image)
+        titleView?.text = movieWrapper?.movie?.title
+        //imageView?.setImageBitmap(movieWrapper?.image)
         return root
     }
 
@@ -61,28 +69,21 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arguments?.takeIf { it.containsKey(ARG_COMIC) }?.apply {
-            val textView: TextView = view.findViewById(R.id.section_label)
-            textView.text = getInt(ARG_COMIC).toString()
-            view.setBackgroundResource(movieWrapper?.color!!)
-        }
-    }
-
-    override fun onComicLoaded(comic: Comic?) {
-        comicWrapper?.comic = comic
-        val textView: TextView? = view?.findViewById(R.id.section_label) ?: null
-        section_label.text = comic?.safe_title
-        saved_title = comic?.safe_title
-        GetImageTask(this).execute(comic!!.img)
+//        arguments?.takeIf { it.containsKey(ARG_MOVIE) }?.apply {
+//            val textView: TextView = view.findViewById(R.id.section_label)
+//            textView.text = getInt(ARG_COMIC).toString()
+//            view.setBackgroundResource(movieWrapper?.color!!)
+//        }
     }
 
     override fun onMovieLoaded(movie: Movie?) {
-        comicWrapper?.comic = comic
-        val textView: TextView? = view?.findViewById(R.id.section_label) ?: null
-        section_label.text = comic?.safe_title
-        saved_title = comic?.safe_title
-        GetImageTask(this).execute(comic!!.img)
+        movieWrapper?.movie = movie
+//        val textView: TextView? = view?.findViewById(R.id.section_label) ?: null
+//        section_label.text = comic?.safe_title
+//        saved_title = comic?.safe_title
+//        GetImageTask(this).execute(comic!!.img)
     }
+
 
 
 }
