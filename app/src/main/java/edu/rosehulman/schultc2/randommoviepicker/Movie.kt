@@ -8,6 +8,7 @@ data class Movie(
         var hulu : Int = 0,
         var ID : Int = 0,
         var runtime : Int = 0,
+        var title: String = ""
 
         ) {
 }

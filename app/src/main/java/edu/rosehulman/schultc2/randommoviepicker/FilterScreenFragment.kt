@@ -1,14 +1,16 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
+import android.accessibilityservice.GestureDescription
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.*
+import com.google.firebase.firestore.core.QueryListener
+import java.time.Year
 
 class FilterScreenFragment: Fragment() {
 
@@ -26,6 +28,7 @@ class FilterScreenFragment: Fragment() {
     private var actors: String?  = null
     private var keyword: String? = null
     private val movies = ArrayList<Movie>()
+    private val randomMovies = ArrayList<FavoriteMovie>()
 
 
     override fun onCreateView(
@@ -122,7 +125,31 @@ class FilterScreenFragment: Fragment() {
 
         val searchButton: Button? = rootView?.findViewById(R.id.search_button) ?: null
 
+        val randomButton: Button? = rootView?.findViewById(R.id.random_button) ?: null
+
         searchButton?.setOnClickListener {
+            Log.d(Constants.TAG, "searchButton selected")
+            val moviesRef : CollectionReference = FirebaseFirestore
+                    .getInstance()
+                    .collection("Movies")
+            moviesRef.get().addOnSuccessListener {
+                snapshot : QuerySnapshot ->
+                for(doc in snapshot){
+                    if(YearCheck(doc.id) ){
+                        var title = (doc["Title"] ?: "Error") as String
+                        var movie = Movie()
+                        movie.title = title
+                        movies.add(movie)
+                    }
+                }
+
+            }
+            for (movie in this.movies){
+                Log.d(Constants.TAG, movie.title)
+            }
+        }
+
+        randomButton?.setOnClickListener{
             getRandomMovie()
         }
 
@@ -133,9 +160,21 @@ class FilterScreenFragment: Fragment() {
         val moviesRef : CollectionReference = FirebaseFirestore
                 .getInstance()
                 .collection("Movies")
-        val query = moviesRef.orderBy("ID", Query.Direction.DESCENDING)
-        query.addSnapshotListener { querySnapshot, error ->
+//        val query = moviesRef.orderBy("ID", Query.Direction.DESCENDING)
+//        query.addSnapshotListener { querySnapshot, error ->
+//
+//        }
+        moviesRef.get().addOnSuccessListener {
+            snapshot : QuerySnapshot ->
+            var i = 5
+            for(doc in snapshot){
+                if(i <= 0) break
+                val title = (doc["Title"] ?: " ") as String
+                this.randomMovies.add(FavoriteMovie(0, title))
+                Log.d(Constants.TAG, title)
+                i--;
 
+            }
         }
 
     }
@@ -146,5 +185,98 @@ class FilterScreenFragment: Fragment() {
 
     interface FilterMovieListener {
         fun getMovieFragment(frag: Fragment)
+    }
+
+    private fun getFilteredMovies(){
+
+    }
+
+    private fun AgeCheck(id: String) : Boolean {
+        if (this.maturity == null) {
+            return true
+        }
+        var check: Boolean = false
+        val ref: DocumentReference = FirebaseFirestore
+                .getInstance()
+                .collection("Movies")
+                .document(id)
+        ref.get().addOnSuccessListener { snapshot: DocumentSnapshot ->
+            var age = (snapshot["Age"] ?: "0") as String
+            if (age.toInt() < this.maturity!!.toInt()) {
+                check = true
+
+            }
+        }
+
+        Log.d(Constants.TAG, check.toString())
+        return check
+    }
+
+    private fun StreamingServiceCheck(id : String) : Boolean{
+        var check: Boolean = false
+        val ref: DocumentReference = FirebaseFirestore
+                .getInstance()
+                .collection("Movies")
+                .document(id)
+        ref.get().addOnSuccessListener {snapshot: DocumentSnapshot ->
+            var netflix = (snapshot["Netflix"] ?: 0) as Int
+            var hulu = (snapshot["Hulu"] ?: 0) as Int
+            var prime = (snapshot["Prime Video"] ?: 0) as Int
+            var disney = (snapshot["Disney+"] ?: 0) as Int
+            if(netflixSelected && (netflix == 1)) check = true
+            if(huluSelected && (hulu == 1)) check = true
+            if(primeSelected && (prime == 1)) check = true
+            if(disneySelected && (disney == 1)) check = true
+        }
+        Log.d(Constants.TAG, check.toString())
+        return check
+    }
+
+    private fun YearCheck(id : String) : Boolean{
+        var check: Boolean = false;
+        val ref: DocumentReference = FirebaseFirestore
+                .getInstance()
+                .collection("Movies")
+                .document(id)
+        ref.get().addOnSuccessListener { snapshot: DocumentSnapshot ->
+            val year = (snapshot["Year"] ?: 0) as Int
+            if(fromYear == null) {
+                if (toYear == null) {
+                    check = true
+                }else{
+                    check = (year <= toYear!!.toInt())
+                }
+            }else{
+                if(toYear == null){
+                    check = (year >= fromYear!!.toInt())
+                }else{
+                    check = ((year <= toYear!!.toInt()) && (year >= fromYear!!.toInt()))
+                }
+            }
+
+        }
+        Log.d(Constants.TAG, check.toString())
+        return check
+    }
+
+    private fun GenreCheck(id : String) : Boolean{
+        var check: Boolean = true;
+        val ref: DocumentReference = FirebaseFirestore
+                .getInstance()
+                .collection("Movies")
+                .document(id)
+        ref.get().addOnSuccessListener { snapshot: DocumentSnapshot ->
+            val genre = (snapshot["Genres"] ?: "") as String
+            for(rb in this.genres) {
+                if (rb.isSelected && !genre.contains(rb.text)) {
+                    check = false
+                    break
+                }
+            }
+        }
+        Log.d(Constants.TAG, check.toString())
+        return check
+
+
     }
 }
