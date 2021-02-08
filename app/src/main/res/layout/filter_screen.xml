@@ -51,12 +51,6 @@
                     android:layout_margin="5dp"
                     android:id="@+id/hulu_filter" />
 
-                <RadioButton
-                    android:id="@+id/fantasy_radio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fantasy"
-                    android:textColor="@color/white" />
 
                 <ToggleButton
                     android:scaleType="fitCenter"
@@ -252,6 +246,7 @@
                     android:id="@+id/drama_radio"
                     android:textColor="@color/white"/>
             </RadioGroup>
+
                 <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -272,6 +267,12 @@
                         android:text="@string/thriller"
                         android:id="@+id/thriller_radio"
                         android:textColor="@color/white"/>
+                    <RadioButton
+                        android:id="@+id/fantasy_radio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fantasy"
+                        android:textColor="@color/white" />
 
                     <RadioButton
                         android:layout_width="wrap_content"

@@ -10,21 +10,29 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.core.QueryListener
+import java.lang.NumberFormatException
 import java.time.Year
 
 class FilterScreenFragment: Fragment() {
 
     private var listener: FilterMovieListener? = null
     private var genres: ArrayList<RadioButton> = arrayListOf()
-    private var netflixSelected: Boolean = false
-    private var primeSelected: Boolean = false
-    private var huluSelected: Boolean = false
-    private var disneySelected: Boolean = false
+//    private var netflixSelected: Boolean = false
+//    private var primeSelected: Boolean = false
+//    private var huluSelected: Boolean = false
+//    private var disneySelected: Boolean = false
+    lateinit var netflixButton : ToggleButton
+    lateinit var huluButton : ToggleButton
+    lateinit var disneyButton : ToggleButton
+    lateinit var primeButton : ToggleButton
+    lateinit var maturityEditText: EditText
     private var fromRating: Double = 0.0
     private var toRating: Double = 5.0
-    private var fromYear: String? = "1970"
-    private var toYear: String? = "2021"
-    private var maturity: String? = null
+//    private var fromYear: String? = "1970"
+//    private var toYear: String? = "2021"
+//    private var maturity: String? = null
+    lateinit var fromYearEditText: EditText
+    lateinit var toYearEditText: EditText
     private var actors: String?  = null
     private var keyword: String? = null
     private val movies = ArrayList<Movie>()
@@ -40,15 +48,15 @@ class FilterScreenFragment: Fragment() {
         val rootView = inflater.inflate(R.layout.filter_screen, container, false)
 
         //Streaming service buttons
-        val netflixButton: ToggleButton? = rootView?.findViewById(R.id.netflix_filter) ?: null
-        val primeButton: ToggleButton? = rootView?.findViewById(R.id.prime_filter) ?: null
-        val huluButton: ToggleButton? = rootView?.findViewById(R.id.hulu_filter) ?: null
-        val disneyButton: ToggleButton? = rootView?.findViewById(R.id.disney_filter) ?: null
+        netflixButton = rootView.findViewById(R.id.netflix_filter)
+        primeButton = rootView.findViewById(R.id.prime_filter)
+        huluButton = rootView.findViewById(R.id.hulu_filter)
+        disneyButton = rootView.findViewById(R.id.disney_filter)
 
-        netflixSelected = netflixButton?.isSelected ?: false
-        primeSelected = primeButton?.isSelected ?: false
-        huluSelected = huluButton?.isSelected ?: false
-        disneySelected = disneyButton?.isSelected ?: false
+//        netflixSelected = netflixButton?.isSelected ?: false
+//        primeSelected = primeButton?.isSelected ?: false
+//        huluSelected = huluButton?.isSelected ?: false
+//        disneySelected = disneyButton?.isSelected ?: false
 
 
         //RatingBars
@@ -64,8 +72,8 @@ class FilterScreenFragment: Fragment() {
 
 
         //Year Input
-        val fromYearEditText : EditText? = rootView?.findViewById(R.id.from_year_drop) ?: null
-        val toYearEditText : EditText? = rootView?.findViewById(R.id.to_year_drop) ?: null
+        fromYearEditText  = rootView.findViewById(R.id.from_year_drop)!!
+        toYearEditText = rootView.findViewById(R.id.to_year_drop)
 
 
 
@@ -75,6 +83,7 @@ class FilterScreenFragment: Fragment() {
         val radioGroup3 : RadioGroup? = rootView?.findViewById(R.id.radio3) ?: null
         val radioGroup4 : RadioGroup? = rootView?.findViewById(R.id.radio4) ?: null
         val radioGroup5 : RadioGroup? = rootView?.findViewById(R.id.radio5) ?: null
+
 
         for( i in 0 until (radioGroup1?.childCount ?: 0)){
             genres.add(radioGroup1?.getChildAt(i) as RadioButton)
@@ -114,7 +123,7 @@ class FilterScreenFragment: Fragment() {
 //        val classicRadio : RadioButton? = rootView?.findViewById(R.id.classic_radio) ?: null
 
         //Maturity Rating Input
-        val maturityEditText : EditText? = rootView?.findViewById(R.id.maturity_rating_input) ?: null
+        maturityEditText = rootView?.findViewById(R.id.maturity_rating_input)!!
 
         //Actors Input
         val actorsEditText : EditText? = rootView?.findViewById(R.id.actors_input) ?: null
@@ -129,23 +138,87 @@ class FilterScreenFragment: Fragment() {
 
         searchButton?.setOnClickListener {
             Log.d(Constants.TAG, "searchButton selected")
+            //check the status of Streaming Toggle Button
+            Log.d(Constants.TAG, "Disney: ${disneyButton.isChecked}, Hulu: ${huluButton.isChecked}, Netflix: ${netflixButton.isChecked}, Prime: ${primeButton.isChecked}")
+
+            //check the status of Genres Radio Button
+            for(rb in genres){
+                Log.d(Constants.TAG, "${rb.text}: ${rb.isChecked}")
+            }
+
+            //check the status of Maturity EditText
+            Log.d(Constants.TAG, "Maturiy: ${this.maturityEditText.text}")
+
+            //check the status of Year EditText
+            Log.d(Constants.TAG, "From Year: ${this.fromYearEditText.text}, To Year: ${this.toYearEditText.text}")
+
             val moviesRef : CollectionReference = FirebaseFirestore
                     .getInstance()
-                    .collection("Movies")
+                    .collection("FormattedMovies")
             moviesRef.get().addOnSuccessListener {
                 snapshot : QuerySnapshot ->
+                var docCount = 0
                 for(doc in snapshot){
-                    if(YearCheck(doc.id) ){
-                        var title = (doc["Title"] ?: "Error") as String
-                        var movie = Movie()
-                        movie.title = title
-                        movies.add(movie)
+                    docCount++
+                    var title = (doc["title"] ?: "None") as String
+                    var maturity = (doc["age"] ?: "") as String
+                    if(maturity.equals("")){
+                        maturity = "0"
+                    }else{
+                        maturity = maturity.substring(0, maturity.length - 1)
                     }
-                }
+                    var genres = (doc["genres"] ?: "") as String
+                    var runtimeInString = (doc["runetime"] ?: "") as String
+                    var runtime : Int
 
-            }
-            for (movie in this.movies){
-                Log.d(Constants.TAG, movie.title)
+                    //some runtime's data type are string but some are number, so
+                    //it's hard to convert them using toObject() method. Therefore
+                    //each value is fetched separately from the firebase and pass
+                    //into the movie parameter
+                    if(runtimeInString.equals("")){
+                        runtime = 0
+                    }else{
+                        runtime = runtimeInString.toInt()
+                    }
+                    var directors = (doc["directors"] ?: "") as String
+                    var disney = (doc["disney"] ?: 0.toLong()) as Long
+                    var hulu = (doc["hulu"] ?: 0.toLong()) as Long
+                    var id = doc.id
+                    var netflix = (doc["netflix"] ?: 0.toLong()) as Long
+                    var prime = (doc["prime"] ?: "") as Long
+//                    var ratingInString = (doc["rating"] ?: "") as String
+//                    var rating : Double
+//                    if(ratingInString.equals("")){
+//                        rating = 0.0
+//                    }else{
+//                        rating = ratingInString.toDouble()
+//                    }
+                    var year = (doc["year"] ?: 0.toLong()) as Long
+
+
+
+
+                    val movie = Movie()
+
+                    if(this.includeGenres(genres) && this.includeStreaming(disney.toInt(), hulu.toInt(), netflix.toInt(), prime.toInt())
+                            && this.includeMaturity(maturity) && this.includeYear(year.toInt())) {
+                        movie.resetMovieParam(maturity, directors, disney.toInt(), genres, hulu.toInt(),
+                                id, netflix.toInt(), prime.toInt(), 10.0, runtime, title, year.toInt())
+                        movies.add(movie)
+                        val movieSummary = "ID: ${doc.id}, Title: $title, Maturity: $maturity, Genres: $genres"
+                        Log.d(Constants.TAG, movieSummary)
+                    }
+
+
+
+
+//                    val movieSummary = "ID: ${doc.id}, Title: $title, Maturity: $maturity, Genres: $genres"
+//                    val movie = doc.toObject(Movie::class.java)
+//                    this.movies.add(movie)
+//                    Log.d(Constants.TAG, movieSummary)
+
+                }
+                Log.d(Constants.TAG, "$docCount vs ${movies.size}")
             }
         }
 
@@ -191,92 +264,44 @@ class FilterScreenFragment: Fragment() {
 
     }
 
-    private fun AgeCheck(id: String) : Boolean {
-        if (this.maturity == null) {
-            return true
-        }
-        var check: Boolean = false
-        val ref: DocumentReference = FirebaseFirestore
-                .getInstance()
-                .collection("Movies")
-                .document(id)
-        ref.get().addOnSuccessListener { snapshot: DocumentSnapshot ->
-            var age = (snapshot["Age"] ?: "0") as String
-            if (age.toInt() < this.maturity!!.toInt()) {
-                check = true
-
-            }
-        }
-
-        Log.d(Constants.TAG, check.toString())
-        return check
+    private fun includeStreaming(disney: Int, hulu: Int, netflix: Int, prime: Int) : Boolean{
+        if(disney == 1 && disneyButton.isChecked) return true
+        if(hulu == 1 && huluButton.isChecked) return true
+        if(netflix == 1 && netflixButton.isChecked) return true
+        if(prime == 1 && primeButton.isChecked) return true
+        return false
     }
 
-    private fun StreamingServiceCheck(id : String) : Boolean{
-        var check: Boolean = false
-        val ref: DocumentReference = FirebaseFirestore
-                .getInstance()
-                .collection("Movies")
-                .document(id)
-        ref.get().addOnSuccessListener {snapshot: DocumentSnapshot ->
-            var netflix = (snapshot["Netflix"] ?: 0) as Int
-            var hulu = (snapshot["Hulu"] ?: 0) as Int
-            var prime = (snapshot["Prime Video"] ?: 0) as Int
-            var disney = (snapshot["Disney+"] ?: 0) as Int
-            if(netflixSelected && (netflix == 1)) check = true
-            if(huluSelected && (hulu == 1)) check = true
-            if(primeSelected && (prime == 1)) check = true
-            if(disneySelected && (disney == 1)) check = true
-        }
-        Log.d(Constants.TAG, check.toString())
-        return check
-    }
-
-    private fun YearCheck(id : String) : Boolean{
-        var check: Boolean = false;
-        val ref: DocumentReference = FirebaseFirestore
-                .getInstance()
-                .collection("Movies")
-                .document(id)
-        ref.get().addOnSuccessListener { snapshot: DocumentSnapshot ->
-            val year = (snapshot["Year"] ?: 0) as Int
-            if(fromYear == null) {
-                if (toYear == null) {
-                    check = true
-                }else{
-                    check = (year <= toYear!!.toInt())
-                }
-            }else{
-                if(toYear == null){
-                    check = (year >= fromYear!!.toInt())
-                }else{
-                    check = ((year <= toYear!!.toInt()) && (year >= fromYear!!.toInt()))
-                }
-            }
-
-        }
-        Log.d(Constants.TAG, check.toString())
-        return check
-    }
-
-    private fun GenreCheck(id : String) : Boolean{
-        var check: Boolean = true;
-        val ref: DocumentReference = FirebaseFirestore
-                .getInstance()
-                .collection("Movies")
-                .document(id)
-        ref.get().addOnSuccessListener { snapshot: DocumentSnapshot ->
-            val genre = (snapshot["Genres"] ?: "") as String
-            for(rb in this.genres) {
-                if (rb.isSelected && !genre.contains(rb.text)) {
-                    check = false
-                    break
-                }
+    private fun includeGenres(genres: String) : Boolean{
+        for(rb in this.genres){
+            if(genres.contains(rb.text) && rb.isChecked){
+                return true
             }
         }
-        Log.d(Constants.TAG, check.toString())
-        return check
+        return false
+    }
 
+    private fun includeMaturity(maturity : String) : Boolean {
+        val movieMaturity = try {
+            this.maturityEditText.text.toString().toInt()
+        }catch (e : NumberFormatException){
+            0
+        }
+        return movieMaturity <= maturity.toInt()
+    }
 
+    private fun includeYear(year: Int) : Boolean{
+        val fromYear = try {
+            this.fromYearEditText.text.toString().toInt()
+        }catch (e : NumberFormatException){
+            1800
+        }
+        val toYear = try {
+            this.toYearEditText.text.toString().toInt()
+        }catch (e : NumberFormatException){
+            2021
+        }
+
+        return ((year <= toYear) && (year >= fromYear))
     }
 }
