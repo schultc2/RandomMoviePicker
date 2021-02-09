@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
         }
     }
 
-    override fun getMovieFragment(movie: Movie) {
+    override fun getMovieFragment(movie: MovieWrapper) {
         Log.d(Constants.TAG,"Segue to Movie Desc Screen")
         val frag = MovieDescFragment.newInstance(movie)
         val fragmentManager: FragmentManager = supportFragmentManager

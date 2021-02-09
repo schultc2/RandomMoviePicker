@@ -112,6 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:isIndicator="true"
+
                 android:id="@+id/to_star_rating"
                 style="@style/MyRatingBar"
                 android:scaleX="0.75"

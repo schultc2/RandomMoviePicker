@@ -7,6 +7,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 @Parcelize
 data class Movie(
@@ -21,7 +22,7 @@ data class Movie(
         var prime : Int = 0,
         var rating : Float = 0.0F,
         var title : String  = " ",
-        var year : Int = 0
+        var year : Int = 0,
         ) : Parcelable {
         @get:Exclude
         @ServerTimestamp

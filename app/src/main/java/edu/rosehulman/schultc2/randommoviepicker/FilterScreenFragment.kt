@@ -61,11 +61,18 @@ class FilterScreenFragment: Fragment() {
         huluButton= rootView?.findViewById(R.id.hulu_filter) ?: null
         disneyButton = rootView?.findViewById(R.id.disney_filter) ?: null
 
-        netflixSelected = netflixButton?.isSelected ?: false
-        primeSelected = primeButton?.isSelected ?: false
-        huluSelected = huluButton?.isSelected ?: false
-        disneySelected = disneyButton?.isSelected ?: false
-
+        netflixButton!!.setOnClickListener {
+            netflixSelected = !netflixSelected
+        }
+        primeButton!!.setOnClickListener {
+            primeSelected = !primeSelected
+        }
+        huluButton!!.setOnClickListener {
+            huluSelected = !huluSelected
+        }
+        disneyButton!!.setOnClickListener {
+            disneySelected = !disneySelected
+        }
 
         //RatingBars
         fromRatingBar = rootView?.findViewById(R.id.from_star_rating) ?: null
@@ -166,6 +173,7 @@ class FilterScreenFragment: Fragment() {
         val searchButton: Button? = rootView?.findViewById(R.id.search_button) ?: null
 
         searchButton?.setOnClickListener {
+
             grabAllMovies()
         }
 
@@ -175,7 +183,7 @@ class FilterScreenFragment: Fragment() {
     private fun grabAllMovies(){
         val moviesRef : CollectionReference = FirebaseFirestore
                 .getInstance()
-                .collection("FormattedMovies")
+                .collection("TestMovies")
         val query = moviesRef.orderBy("id", Query.Direction.DESCENDING)
         query.addSnapshotListener { querySnapshot, error ->
             if(error != null){
@@ -198,12 +206,9 @@ class FilterScreenFragment: Fragment() {
         }
         for(currMovie in movies){
             //Filter Streaming Service
-            var goodService = true
+            var goodService = false
             Log.d(Constants.TAG,"Currently Checking $currMovie.title")
-            netflixSelected = netflixButton?.isSelected ?: false
-            primeSelected = primeButton?.isSelected ?: false
-            huluSelected = huluButton?.isSelected ?: false
-            disneySelected = disneyButton?.isSelected ?: false
+
 
             //Filter Rating
             //var myRating = currMovie.rating.toFloat()
@@ -214,39 +219,55 @@ class FilterScreenFragment: Fragment() {
             var myYear = currMovie.year.toInt()
             var goodYear = true
 
-            fromYear = fromYearEditText?.text.toString().toInt() ?:1970
-            toYear = toYearEditText?.text.toString().toInt() ?:2021
+            if(fromYearEditText?.text.toString() != ""){
+                fromYear = fromYearEditText?.text.toString().toInt()
+            } else {
+                fromYear = 1970
+            }
+
+            if(toYearEditText?.text.toString() != ""){
+                toYear = fromYearEditText?.text.toString().toInt()
+            } else {
+                toYear = 2021
+            }
 
             //Maturity Rating
             var matureRating = getComparableRating(currMovie.age!!)
             var filteredMatureRating = getComparableRating(maturityEditText.toString())
             var goodMaturity = true
 
-            if(!(((currMovie.netflix == 1) && netflixSelected) || ((currMovie.disney == 1) && disneySelected) || ((currMovie.hulu == 1) && huluSelected) || ((currMovie.prime == 1) && primeSelected))){
-                goodService = false
+            if((((currMovie.netflix == 1) && netflixSelected) || ((currMovie.disney == 1) && disneySelected) || ((currMovie.hulu == 1) && huluSelected) || ((currMovie.prime == 1) && primeSelected))){
+                goodService = true
+            }
+
+            if(!goodService){
+                Log.d(Constants.TAG,"Not on netflix: $netflixSelected")
             }
 //            else if (!(myRating >= fromRating) && (myRating <= toRating)){
 //                goodRating = false
 //            }
-            else if (!(myYear >= fromYear!!) && (myYear <= toYear!!)){
-                goodYear = false
-            }
-            else if (!(matureRating <= filteredMatureRating)){
-                goodMaturity = false
-            }
+//            else if (!(myYear >= fromYear!!) && (myYear <= toYear!!)){
+//                goodYear = false
+//            }
+//            else if (!(matureRating <= filteredMatureRating)){
+//                goodMaturity = false
+//            }
 
             //Filter Genres
-            var goodGenre = true
+            var goodGenre = false
 
             for(genre in genres){
                 if(genre.isChecked){
-                    if(!currMovie.genres.contains(genre.text)){
-                        goodGenre = false
+                    var containedGenre = currMovie.genres.contains(genre.text)
+                    //Log.d(Constants.TAG,"Genre check: ${genre.text} in ${currMovie.genres} = $containedGenre")
+                    if(currMovie.genres.contains(genre.text)){
+                        goodGenre = true || goodGenre
                     }
                 }
             }
 
             if(goodService && goodYear && goodGenre && goodRating && goodMaturity){
+                Log.d(Constants.TAG,"Added Movie: ${currMovie.title}")
                 goodMovies.add(currMovie)
             }
         }
@@ -254,9 +275,11 @@ class FilterScreenFragment: Fragment() {
     }
 
     private fun switchToRandomMovieDesc(goodMovies : ArrayList<Movie>){
+
         if(goodMovies.isNotEmpty()){
             val randomMovie = goodMovies.random()
-            listener?.getMovieFragment(randomMovie)
+            Log.d(Constants.TAG,"Chose Movie: ${randomMovie.title}")
+            listener?.getMovieFragment(MovieWrapper(randomMovie,null))
         }
     }
 
@@ -302,7 +325,7 @@ class FilterScreenFragment: Fragment() {
     }
 
     interface FilterMovieListener {
-        fun getMovieFragment(movie: Movie)
+        fun getMovieFragment(movie: MovieWrapper)
     }
 
 

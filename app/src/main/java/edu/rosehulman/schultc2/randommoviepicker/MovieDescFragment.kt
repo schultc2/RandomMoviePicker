@@ -1,6 +1,7 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.TextView
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.movie_desc_screen.view.*
 
 private const val ARG_MOVIE = "movie"
 
@@ -22,7 +24,7 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 
 
     companion object {
-        fun newInstance(movie: Movie) =
+        fun newInstance(movie: MovieWrapper) =
             MovieDescFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_MOVIE, movie)
@@ -32,9 +34,10 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        movieWrapper?.movie = arguments?.getParcelable(ARG_MOVIE)
+        movieWrapper = arguments?.getParcelable(ARG_MOVIE)
+        Log.d(Constants.TAG,"Chosen Movie: ${movieWrapper?.movie?.title}")
         if(movieWrapper != null){
-            val urlString = " http://www.omdbapi.com/?t=${movieWrapper?.movie?.title}&plot=full&apikey=7e1d379f"
+            val urlString = "https://www.omdbapi.com/?t=${movieWrapper?.movie?.title}&plot=full&apikey=7e1d379f"
             GetMovieTask(this).execute(urlString)
         }
 
@@ -47,45 +50,30 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 
         //Initialize all the views from the MovieDescScreeb
         val root = inflater.inflate(R.layout.movie_desc_screen, container, false)
-        val ssImageView: ImageView? = view?.findViewById(R.id.avail_ss) ?: null
-        val posterImageView: ImageView? = view?.findViewById(R.id.movie_poster) ?: null
-        val titleView: TextView? = view?.findViewById(R.id.movie_title) ?: null
-        val genresView: TextView? = view?.findViewById(R.id.movie_genres) ?: null
-        val yearView: TextView? = view?.findViewById(R.id.release_year_text) ?: null
-        val runtimeView: TextView? = view?.findViewById(R.id.movie_length_text) ?: null
-        val maturityView: TextView? = view?.findViewById(R.id.maturity_rating_text) ?: null
-        val ratingBar: RatingBar? = view?.findViewById(R.id.star_rating_bar) ?: null
-        val directorView: TextView? = view?.findViewById(R.id.director_text) ?: null
-        val actorsView: TextView? = view?.findViewById(R.id.actor_text) ?: null
-        val descView: TextView? = view?.findViewById(R.id.desc_text) ?: null
-        val trailerView: VideoView? = view?.findViewById(R.id.trailer_view) ?: null
-
 
         //Display the Streaming service the movie is available on
         if(movieWrapper?.movie?.netflix == 1){
-            ssImageView?.setImageResource(R.drawable.netflix_button)
+            root.avail_ss.setImageResource(R.drawable.netflix_button)
         } else if(movieWrapper?.movie?.disney == 1){
-            ssImageView?.setImageResource(R.drawable.disney_button)
+            root.avail_ss.setImageResource(R.drawable.disney_button)
         } else if(movieWrapper?.movie?.hulu == 1){
-            ssImageView?.setImageResource(R.drawable.hulu_button)
+            root.avail_ss.setImageResource(R.drawable.hulu_button)
         } else if(movieWrapper?.movie?.prime == 1){
-            ssImageView?.setImageResource(R.drawable.prime_button)
+            root.avail_ss.setImageResource(R.drawable.prime_button)
         }
 
-        //Display Poster Image
-        Picasso.with(context).load(movieWrapper?.poster).into(posterImageView)
 
         //Display Title View
-        titleView?.text = movieWrapper?.movie?.title
+        root.movie_title.text = movieWrapper?.movie?.title
 
         //Display Genres Text
-        genresView?.text = movieWrapper?.movie?.genres
+        root.movie_genres.text = movieWrapper?.movie?.genres
 
         //Display Year Released
-        yearView?.text = "Released: ${movieWrapper?.movie?.year.toString()}"
+        root.release_year_text.text = "Released: ${movieWrapper?.movie?.year.toString()}"
 
         //Display runtime
-        runtimeView?.text = "${movieWrapper?.movie?.runtime.toString()} min"
+        root.movie_length_text.text = "${movieWrapper?.movie?.runtime.toString()} min"
 
         //Display Maturity Rating
         var maturityRating: String = ""
@@ -116,19 +104,14 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
             }
         }
 
-        maturityView?.text = maturityRating
+        root.maturity_rating_text.text = maturityRating
 
         //Display RatingBar
-        //ratingBar?.setRating(movieWrapper?.movie?.rating!!.toFloat())
+        root.star_rating_bar.setRating(movieWrapper?.movie?.rating!!.toFloat()/2)
 
         //Display directors
-        directorView?.text = "Director: ${movieWrapper?.movie?.directors.toString()}"
+        root.director_text.text = "Director: ${movieWrapper?.movie?.directors.toString()}"
 
-        //Display Actors
-        actorsView?.text = movieWrapper?.actors
-
-        //Display Description
-        descView?.text = movieWrapper?.plot
 
         //TODO: Figure out how to get and display a video trailer
 
@@ -146,8 +129,19 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
 //        }
     }
 
-    override fun onMovieLoaded(movie: Movie?) {
-          movieWrapper?.movie = movie
+    override fun onMovieLoaded(movieData: MovieData?) {
+          val posterImageView: ImageView? = view?.findViewById(R.id.movie_poster) ?: null
+          val actorsView: TextView? = view?.findViewById(R.id.actor_text) ?: null
+          val descView: TextView? = view?.findViewById(R.id.desc_text) ?: null
+          //movie?.movieView = movieData
+
+         //Display Actors
+            actorsView?.text = movieData?.Actors
+
+         //Display Description
+            descView?.text = movieData?.Plot
+          //Display Poster Image
+          Picasso.with(context).load(movieData?.Poster).into(posterImageView)
 //        val textView: TextView? = view?.findViewById(R.id.section_label) ?: null
 //        section_label.text = comic?.safe_title
 //        saved_title = comic?.safe_title
