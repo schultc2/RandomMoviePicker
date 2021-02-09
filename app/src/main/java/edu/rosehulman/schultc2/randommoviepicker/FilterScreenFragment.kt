@@ -183,7 +183,7 @@ class FilterScreenFragment: Fragment() {
     private fun grabAllMovies(){
         val moviesRef : CollectionReference = FirebaseFirestore
                 .getInstance()
-                .collection("TestMovies")
+                .collection("FormattedMovies")
         val query = moviesRef.orderBy("id", Query.Direction.DESCENDING)
         query.addSnapshotListener { querySnapshot, error ->
             if(error != null){
