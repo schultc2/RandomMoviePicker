@@ -96,7 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/maturity_rating_text"
                 android:numStars="5"
+                android:stepSize="0.1"
                 android:progressTint="@color/star_color"
+                android:secondaryProgressTint="@color/star_color"
                 android:isIndicator="true"
                 android:id="@+id/star_rating_bar"
                 />

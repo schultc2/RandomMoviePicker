@@ -211,13 +211,13 @@ class FilterScreenFragment: Fragment() {
 
 
             //Filter Rating
-            //var myRating = currMovie.rating.toFloat()
+            var myRating = currMovie.rating.toFloat()/2
 
-            var goodRating = true
+            var goodRating = false
 
             //Filter year
             var myYear = currMovie.year.toInt()
-            var goodYear = true
+            var goodYear = false
 
             if(fromYearEditText?.text.toString() != ""){
                 fromYear = fromYearEditText?.text.toString().toInt()
@@ -226,32 +226,40 @@ class FilterScreenFragment: Fragment() {
             }
 
             if(toYearEditText?.text.toString() != ""){
-                toYear = fromYearEditText?.text.toString().toInt()
+                toYear = toYearEditText?.text.toString().toInt()
             } else {
                 toYear = 2021
             }
 
             //Maturity Rating
             var matureRating = getComparableRating(currMovie.age!!)
-            var filteredMatureRating = getComparableRating(maturityEditText.toString())
-            var goodMaturity = true
+            //Log.d(Constants.TAG,"Maturity input: ${maturityEditText?.text.toString()}")
+            var filteredMatureRating = getComparableRating(maturityEditText?.text.toString())
+            var goodMaturity = false
 
             if((((currMovie.netflix == 1) && netflixSelected) || ((currMovie.disney == 1) && disneySelected) || ((currMovie.hulu == 1) && huluSelected) || ((currMovie.prime == 1) && primeSelected))){
                 goodService = true
             }
 
+            Log.d(Constants.TAG,"Rating check: ${myRating} in ${fromRating} to $toRating")
+            Log.d(Constants.TAG,"Year check: ${myYear} in ${fromYear} to $toYear")
+            Log.d(Constants.TAG,"Maturity check: ${matureRating} in $filteredMatureRating")
             if(!goodService){
                 Log.d(Constants.TAG,"Not on netflix: $netflixSelected")
             }
-//            else if (!(myRating >= fromRating) && (myRating <= toRating)){
-//                goodRating = false
-//            }
-//            else if (!(myYear >= fromYear!!) && (myYear <= toYear!!)){
-//                goodYear = false
-//            }
-//            else if (!(matureRating <= filteredMatureRating)){
-//                goodMaturity = false
-//            }
+            if ((myRating >= fromRating) && (myRating <= toRating)){
+                goodRating = true
+            }
+            if ((myYear >= fromYear!!) && (myYear <= toYear!!)){
+                goodYear = true
+            }
+            if (matureRating <= filteredMatureRating){
+                goodMaturity = true
+            }
+
+            Log.d(Constants.TAG,"Rating check: $goodRating")
+            Log.d(Constants.TAG,"Year check: $goodYear")
+            Log.d(Constants.TAG,"Maturity check: $goodMaturity")
 
             //Filter Genres
             var goodGenre = false

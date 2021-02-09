@@ -92,15 +92,19 @@
                 android:gravity="center"
                 android:id="@+id/ratingView"
                 android:layout_below="@id/star_rating_title">
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:isIndicator="true"
-                android:id="@+id/from_star_rating"
-                style="@style/MyRatingBar"
-                android:scaleX="0.75"
-                android:scaleY="0.75"
-               />
+                <RatingBar
+                    android:layout_below="@id/star_rating_title"
+                    android:layout_width="wrap_content"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_height="wrap_content"
+                    android:progressTint="@color/star_color"
+                    android:progressBackgroundTint="@color/shade_of_black"
+                    android:secondaryProgressTint="@color/star_color"
+                    android:isIndicator="false"
+                    android:numStars="5"
+                    android:stepSize="0.1"
+                    android:id="@+id/from_star_rating"
+                    android:layout_marginLeft="10dp"/>
 
             <ImageView
                 android:layout_width="25dp"
@@ -108,15 +112,20 @@
                 android:id="@+id/dashimage"
                 android:src="@drawable/ic_baseline_horizontal_rule_24"
                 />
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:isIndicator="true"
-
-                android:id="@+id/to_star_rating"
-                style="@style/MyRatingBar"
-                android:scaleX="0.75"
-                android:scaleY="0.75"/>
+                <RatingBar
+                    android:layout_below="@id/star_rating_title"
+                    android:layout_width="wrap_content"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:secondaryProgressTint="@color/star_color"
+                    android:progressTint="@color/star_color"
+                    android:progressBackgroundTint="@color/shade_of_black"
+                    android:isIndicator="false"
+                    android:stepSize="0.1"
+                    android:rating="5"
+                    android:id="@+id/to_star_rating"
+                    android:layout_marginRight="5dp"/>
             </LinearLayout>
             <TextView
                 android:id="@+id/release_year_title"
@@ -171,6 +180,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/to_year_drop"
                 android:padding="20dp"
+                android:layout_marginRight="40dp"
                 android:textColor="@color/white"
                 android:inputType="number"
                 android:layout_below="@id/release_year_title"
