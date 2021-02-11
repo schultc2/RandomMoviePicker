@@ -173,32 +173,35 @@ class FilterScreenFragment: Fragment() {
         val searchButton: Button? = rootView?.findViewById(R.id.search_button) ?: null
 
         searchButton?.setOnClickListener {
-
-            grabAllMovies()
+            if(movies.isEmpty()){
+                grabAllMovies()
+            } else{
+                getFilteredMovie()
+            }
         }
 
         return rootView
     }
 
     private fun grabAllMovies(){
-        val moviesRef : CollectionReference = FirebaseFirestore
-                .getInstance()
-                .collection("FormattedMovies")
-        val query = moviesRef.orderBy("id", Query.Direction.DESCENDING)
-        query.addSnapshotListener { querySnapshot, error ->
-            if(error != null){
-                Log.e(Constants.TAG, "Error getting movies: $error")
-                return@addSnapshotListener
+            val moviesRef: CollectionReference = FirebaseFirestore
+                    .getInstance()
+                    .collection("FormattedMovies")
+            val query = moviesRef.orderBy("id", Query.Direction.DESCENDING)
+            query.addSnapshotListener { querySnapshot, error ->
+                if (error != null) {
+                    Log.e(Constants.TAG, "Error getting movies: $error")
+                    return@addSnapshotListener
+                }
+                movies.removeAll(movies)
+                querySnapshot?.documents?.forEach { documentSnapshot: DocumentSnapshot ->
+                    movies.add(Movie.fromSnapshot(documentSnapshot))
+                }
+                getFilteredMovie()
             }
-            movies.removeAll(movies)
-            querySnapshot?.documents?.forEach { documentSnapshot: DocumentSnapshot ->
-                movies.add(Movie.fromSnapshot(documentSnapshot))
-            }
-            getFilteredMovie(moviesRef)
-        }
     }
 
-    private fun getFilteredMovie(moviesRef : CollectionReference){
+    private fun getFilteredMovie(){
         Log.d(Constants.TAG,"Filtering Movies")
         var goodMovies = ArrayList<Movie>()
         if(movies.isEmpty()){
@@ -207,7 +210,7 @@ class FilterScreenFragment: Fragment() {
         for(currMovie in movies){
             //Filter Streaming Service
             var goodService = false
-            Log.d(Constants.TAG,"Currently Checking $currMovie.title")
+//            Log.d(Constants.TAG,"Currently Checking $currMovie.title")
 
 
             //Filter Rating
@@ -241,11 +244,11 @@ class FilterScreenFragment: Fragment() {
                 goodService = true
             }
 
-            Log.d(Constants.TAG,"Rating check: ${myRating} in ${fromRating} to $toRating")
-            Log.d(Constants.TAG,"Year check: ${myYear} in ${fromYear} to $toYear")
-            Log.d(Constants.TAG,"Maturity check: ${matureRating} in $filteredMatureRating")
+//            Log.d(Constants.TAG,"Rating check: ${myRating} in ${fromRating} to $toRating")
+//            Log.d(Constants.TAG,"Year check: ${myYear} in ${fromYear} to $toYear")
+//            Log.d(Constants.TAG,"Maturity check: ${matureRating} in $filteredMatureRating")
             if(!goodService){
-                Log.d(Constants.TAG,"Not on netflix: $netflixSelected")
+//                Log.d(Constants.TAG,"Not on netflix: $netflixSelected")
             }
             if ((myRating >= fromRating) && (myRating <= toRating)){
                 goodRating = true
@@ -257,9 +260,9 @@ class FilterScreenFragment: Fragment() {
                 goodMaturity = true
             }
 
-            Log.d(Constants.TAG,"Rating check: $goodRating")
-            Log.d(Constants.TAG,"Year check: $goodYear")
-            Log.d(Constants.TAG,"Maturity check: $goodMaturity")
+//            Log.d(Constants.TAG,"Rating check: $goodRating")
+//            Log.d(Constants.TAG,"Year check: $goodYear")
+//            Log.d(Constants.TAG,"Maturity check: $goodMaturity")
 
             //Filter Genres
             var goodGenre = false
@@ -275,7 +278,7 @@ class FilterScreenFragment: Fragment() {
             }
 
             if(goodService && goodYear && goodGenre && goodRating && goodMaturity){
-                Log.d(Constants.TAG,"Added Movie: ${currMovie.title}")
+//                Log.d(Constants.TAG,"Added Movie: ${currMovie.title}")
                 goodMovies.add(currMovie)
             }
         }
