@@ -6,21 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RatingBar
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.fragment.app.Fragment
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.movie_desc_screen.*
 import kotlinx.android.synthetic.main.movie_desc_screen.view.*
+
 
 private const val ARG_MOVIE = "movie"
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
+class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTask.TrailerConsumer{
 
     private var movieWrapper: MovieWrapper? = null
+    private lateinit var videoId: String
 
 
     companion object {
@@ -35,11 +39,15 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         movieWrapper = arguments?.getParcelable(ARG_MOVIE)
-        Log.d(Constants.TAG,"Chosen Movie: ${movieWrapper?.movie?.title}")
+        Log.d(Constants.TAG, "Chosen Movie: ${movieWrapper?.movie?.title}")
         if(movieWrapper != null){
             val urlString = "https://www.omdbapi.com/?t=${movieWrapper?.movie?.title}&plot=full&apikey=7e1d379f"
             GetMovieTask(this).execute(urlString)
+            val trailerURL = "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${movieWrapper?.movie?.title}%20Trailer&key=AIzaSyDXj7i96SWYIq_8BBP5ORoAko9NQBNo6WM"
+            GetTrailerTask(this).execute(trailerURL)
         }
+
+
 
     }
 
@@ -107,27 +115,17 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
         root.maturity_rating_text.text = maturityRating
 
         //Display RatingBar
-        root.star_rating_bar.setRating(movieWrapper?.movie?.rating!!.toFloat()/2)
+        root.star_rating_bar.setRating(movieWrapper?.movie?.rating!!.toFloat() / 2)
 
         //Display directors
         root.director_text.text = "Director: ${movieWrapper?.movie?.directors.toString()}"
 
 
-        //TODO: Figure out how to get and display a video trailer
-
         return root
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-//        arguments?.takeIf { it.containsKey(ARG_MOVIE) }?.apply {
-//            val textView: TextView = view.findViewById(R.id.section_label)
-//            textView.text = getInt(ARG_COMIC).toString()
-//            view.setBackgroundResource(movieWrapper?.color!!)
-//        }
-    }
 
     override fun onMovieLoaded(movieData: MovieData?) {
           val posterImageView: ImageView? = view?.findViewById(R.id.movie_poster) ?: null
@@ -142,11 +140,25 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer {
             descView?.text = movieData?.Plot
           //Display Poster Image
           Picasso.with(context).load(movieData?.Poster).into(posterImageView)
-//        val textView: TextView? = view?.findViewById(R.id.section_label) ?: null
-//        section_label.text = comic?.safe_title
-//        saved_title = comic?.safe_title
-//        GetImageTask(this).execute(comic!!.img)
+    }
 
+    override fun onTrailerLoaded(trailer: TrailerData?) {
+//        val trailerVideoView: YouTubePlayerView? = view?.findViewById(R.id.trailer_view) ?: null
+
+        //videoId = trailer!!.items[0].id.videoID
+//        var youtubePlayerFragment : YouTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance()
+//        youtubePlayerFragment.initialize("AIzaSyDXj7i96SWYIq_8BBP5ORoAko9NQBNo6WM", this)
+
+        val youTubePlayerView: YouTubePlayerView? = view?.findViewById(R.id.trailer_view) ?: null
+        lifecycle.addObserver(youTubePlayerView!!)
+
+        youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                val videoId = trailer!!.items[0].id.videoId
+                youTubePlayer.loadVideo(videoId, 1F)
+            }
+        })
+//        trailerVideoView?.initialize("AIzaSyDXj7i96SWYIq_8BBP5ORoAko9NQBNo6WM", YoutubeActivity(trailer!!.items[0].id.videoID))
     }
 
 
