@@ -1,6 +1,6 @@
 package edu.rosehulman.schultc2.randommoviepicker
 
-import org.json.JSONArray
+
 
 
 data class MovieData(var Poster: String = "https://i.pinimg.com/originals/96/a0/0d/96a00d42b0ff8f80b7cdf2926a211e47.jpg",
