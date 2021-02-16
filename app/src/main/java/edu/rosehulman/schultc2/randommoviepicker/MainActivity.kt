@@ -11,7 +11,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 
-class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener, FilterScreenFragment.FilterMovieListener {
+class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener, FilterScreenFragment.FilterMovieListener
+        , SplashFragment.OnLoginButtonPressedListener, FavoriteMovieList.OnFavoriteSelectedListener{
 
     private val RC_SIGN_IN = 1
     private lateinit var authStateListener : FirebaseAuth.AuthStateListener
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        logInWithUI()
+//        logInWithUI()
         initializeListener()
 
 //        val fragment = StartScreenFragment()
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
     }
 
     override fun replaceFragment(fragment: Fragment) {
-        Log.d(Constants.TAG,"Segue to Filter Screen")
+//        Log.d(Constants.TAG,"Segue to Filter Screen")
         val fragmentManager: FragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment, fragment.toString())
@@ -48,18 +49,23 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
         auth.removeAuthStateListener(authStateListener)
     }
 
+    fun signOut(){
+        auth.signOut()
+    }
+
     private fun initializeListener(){
         authStateListener = FirebaseAuth.AuthStateListener { auth: FirebaseAuth ->
             val user = auth.currentUser
             Log.d(Constants.TAG, "In auth listener, user = $user")
             if(user != null){
 //                replaceFragment(StartScreenFragment())
-                val fragment = StartScreenFragment()
+                val fragment = StartScreenFragment.newInstance(user.uid)
                 val ft = supportFragmentManager.beginTransaction()
                 ft.add(R.id.fragment_container, fragment)
                 ft.commit()
             }else{
                 Log.d(Constants.TAG, "user is null")
+                switchToSplashFragment()
             }
         }
     }
@@ -74,12 +80,18 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
 
     override fun getMovieFragment(movie: MovieWrapper) {
         Log.d(Constants.TAG,"Segue to Movie Desc Screen")
-        val frag = MovieDescFragment.newInstance(movie)
+        val frag = MovieDescFragment.newInstance(movie,auth.currentUser!!.uid, false)
         val fragmentManager: FragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
         fragmentTransaction.addToBackStack(frag.toString())
         fragmentTransaction.commit()
+    }
+
+    private fun switchToSplashFragment() {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, SplashFragment())
+        ft.commit()
     }
 
     private fun logInWithUI(){
@@ -98,6 +110,20 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
                         .build()
 
         startActivityForResult(loginIntent, RC_SIGN_IN)
+    }
+
+    override fun onLoginButtonPressed() {
+        logInWithUI()
+    }
+
+    override fun onFavoriteSelected(movie: MovieWrapper) {
+        Log.d(Constants.TAG,"Segue to Movie Desc Screen")
+        val frag = MovieDescFragment.newInstance(movie,auth.currentUser!!.uid, true)
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
+        fragmentTransaction.addToBackStack(frag.toString())
+        fragmentTransaction.commit()
     }
 
 }

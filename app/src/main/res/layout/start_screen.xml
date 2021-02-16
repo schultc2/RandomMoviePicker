@@ -5,6 +5,24 @@
     android:layout_height="match_parent"
     >
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/background_color"
+        android:text="Favorites"
+        android:layout_alignParentRight="true"
+        android:id="@+id/fav_list_button"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/background_color"
+        android:text="Logout"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/logout_button"
+        />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

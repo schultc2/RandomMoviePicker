@@ -32,7 +32,6 @@ data class Movie(
                 fun fromSnapshot(snapshot: DocumentSnapshot): Movie {
                         Log.d(Constants.TAG,snapshot.data.toString())
                         val movie = snapshot.toObject(Movie::class.java)!!
-
                         return movie
                 }
         }

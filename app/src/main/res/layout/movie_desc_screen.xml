@@ -84,11 +84,13 @@
             <ImageButton
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+
                 android:layout_below="@id/movie_length_text"
                 android:src="@drawable/ic_baseline_favorite_24"
                 android:background="@color/background_color"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="30dp"
+                android:id="@+id/fav_button"
                 android:contentDescription="@string/favorite_button"
                 />
             <RatingBar

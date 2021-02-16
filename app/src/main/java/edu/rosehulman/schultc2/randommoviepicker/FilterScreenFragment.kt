@@ -164,11 +164,11 @@ class FilterScreenFragment: Fragment() {
         //Maturity Rating Input
         maturityEditText = rootView?.findViewById(R.id.maturity_rating_input) ?: null
 
-        //Actors Input
-        actorsEditText = rootView?.findViewById(R.id.actors_input) ?: null
-
-        //Keyword Input
-        keywordEditText = rootView?.findViewById(R.id.keyword_input) ?: null
+//        //Actors Input
+//        actorsEditText = rootView?.findViewById(R.id.actors_input) ?: null
+//
+//        //Keyword Input
+//        keywordEditText = rootView?.findViewById(R.id.keyword_input) ?: null
 
         val searchButton: Button? = rootView?.findViewById(R.id.search_button) ?: null
 

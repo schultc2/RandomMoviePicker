@@ -5,9 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -17,21 +21,26 @@ import kotlinx.android.synthetic.main.movie_desc_screen.view.*
 
 
 private const val ARG_MOVIE = "movie"
+private const val ARG_UID = "uid"
+private const val ARG_FAV = "isFav"
 
 /**
  * A placeholder fragment containing a simple view.
  */
-class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTask.TrailerConsumer{
+class MovieDescFragment() : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTask.TrailerConsumer{
 
     private var movieWrapper: MovieWrapper? = null
-    private lateinit var videoId: String
+    private var uid: String? = null
+    private var favorited : Boolean? = false
 
 
     companion object {
-        fun newInstance(movie: MovieWrapper) =
+        fun newInstance(movie: MovieWrapper, uid: String, isFav: Boolean) =
             MovieDescFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_MOVIE, movie)
+                    putString(ARG_UID,uid)
+                    putBoolean(ARG_FAV,isFav)
                 }
             }
     }
@@ -39,6 +48,8 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTask
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         movieWrapper = arguments?.getParcelable(ARG_MOVIE)
+        uid = arguments?.getString(ARG_UID)
+        favorited = arguments?.getBoolean(ARG_FAV)
         Log.d(Constants.TAG, "Chosen Movie: ${movieWrapper?.movie?.title}")
         if(movieWrapper != null){
             val urlString = "https://www.omdbapi.com/?t=${movieWrapper?.movie?.title}&plot=full&apikey=7e1d379f"
@@ -120,6 +131,39 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTask
         //Display directors
         root.director_text.text = "Director: ${movieWrapper?.movie?.directors.toString()}"
 
+        val favButton: ImageButton? = root.fav_button
+
+        if(!favorited!!){
+            favButton?.setImageResource(R.drawable.ic_baseline_favorite_24)
+        } else{
+            favButton?.setImageResource(R.drawable.ic_baseline_favorited_24)
+        }
+
+        val movieQuotesRef = FirebaseFirestore
+                .getInstance()
+                .collection(Constants.USERS_COLLECTION)
+                .document(uid!!)
+                .collection(Constants.FAVORITES_COLLECTION)
+
+        favButton!!.setOnClickListener {
+            if(!favorited!!){
+                favButton.setImageResource(R.drawable.ic_baseline_favorited_24)
+                movieQuotesRef.add(FavoriteMovie(movieWrapper?.movie!!,movieWrapper?.movieData!!.Poster,movieWrapper?.movie!!.id))
+            } else{
+                favButton.setImageResource(R.drawable.ic_baseline_favorite_24)
+                movieQuotesRef.addSnapshotListener { query, error ->
+                    query?.documents?.forEach { doc : DocumentSnapshot ->
+                        val currId = doc.get("refId").toString()
+                        if(currId == movieWrapper!!.movie!!.id.toString()){
+                            Log.d(Constants.TAG, "Remove Fav Movie: ${movieWrapper?.movie?.title}")
+                            doc.reference.delete()
+                        }
+                    }
+                }
+            }
+            favorited = !favorited!!
+        }
+
 
         return root
     }
@@ -132,7 +176,7 @@ class MovieDescFragment : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTask
           val actorsView: TextView? = view?.findViewById(R.id.actor_text) ?: null
           val descView: TextView? = view?.findViewById(R.id.desc_text) ?: null
           //movie?.movieView = movieData
-
+            movieWrapper?.movieData = movieData
          //Display Actors
             actorsView?.text = movieData?.Actors
 
