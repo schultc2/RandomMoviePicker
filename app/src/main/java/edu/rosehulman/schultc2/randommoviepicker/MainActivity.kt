@@ -8,16 +8,25 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.firebase.ui.auth.AuthUI
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener, FilterScreenFragment.FilterMovieListener {
+
+    private val RC_SIGN_IN = 1
+    private lateinit var authStateListener : FirebaseAuth.AuthStateListener
+    private val auth = FirebaseAuth.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        logInWithUI()
+        initializeListener()
 
-        val fragment = StartScreenFragment()
-        val ft = supportFragmentManager.beginTransaction()
-        ft.add(R.id.fragment_container, fragment)
-        ft.commit()
+//        val fragment = StartScreenFragment()
+//        val ft = supportFragmentManager.beginTransaction()
+//        ft.add(R.id.fragment_container, fragment)
+//        ft.commit()
     }
 
     override fun replaceFragment(fragment: Fragment) {
@@ -27,6 +36,32 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
         fragmentTransaction.replace(R.id.fragment_container, fragment, fragment.toString())
         fragmentTransaction.addToBackStack(fragment.toString())
         fragmentTransaction.commit()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        auth.addAuthStateListener(authStateListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        auth.removeAuthStateListener(authStateListener)
+    }
+
+    private fun initializeListener(){
+        authStateListener = FirebaseAuth.AuthStateListener { auth: FirebaseAuth ->
+            val user = auth.currentUser
+            Log.d(Constants.TAG, "In auth listener, user = $user")
+            if(user != null){
+//                replaceFragment(StartScreenFragment())
+                val fragment = StartScreenFragment()
+                val ft = supportFragmentManager.beginTransaction()
+                ft.add(R.id.fragment_container, fragment)
+                ft.commit()
+            }else{
+                Log.d(Constants.TAG, "user is null")
+            }
+        }
     }
 
     private fun closeKeyBoard() {
@@ -45,6 +80,24 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
         fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
         fragmentTransaction.addToBackStack(frag.toString())
         fragmentTransaction.commit()
+    }
+
+    private fun logInWithUI(){
+        // Choose authentication providers
+        val providers = arrayListOf(
+                AuthUI.IdpConfig.EmailBuilder().build(),
+                AuthUI.IdpConfig.PhoneBuilder().build(),
+                AuthUI.IdpConfig.GoogleBuilder().build())
+
+// Create and launch sign-in intent
+        val loginIntent =
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .setLogo(R.mipmap.ic_launcher_foreground)
+                        .build()
+
+        startActivityForResult(loginIntent, RC_SIGN_IN)
     }
 
 }
