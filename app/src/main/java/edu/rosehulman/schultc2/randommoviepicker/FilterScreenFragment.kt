@@ -12,11 +12,13 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.filter_screen.*
 
-class FilterScreenFragment: Fragment() {
+class FilterScreenFragment: Fragment(), View.OnClickListener {
 
     private var listener: FilterMovieListener? = null
     private var genres: ArrayList<CheckBox> = arrayListOf()
+    private var genreBool: ArrayList<Boolean> = arrayListOf()
     private var netflixSelected: Boolean = false
     private var primeSelected: Boolean = false
     private var huluSelected: Boolean = false
@@ -30,6 +32,29 @@ class FilterScreenFragment: Fragment() {
     private var keyword: String? = null
     private var movies = ArrayList<Movie>()
 
+    private lateinit var comedyRadio : CheckBox
+    private lateinit var scifiRadio : CheckBox
+    private lateinit var dramaRadio : CheckBox
+    private lateinit var supernaturalRadio : CheckBox
+    private lateinit var westernRadio : CheckBox
+    private lateinit var foreignRadio : CheckBox
+    private lateinit var actionRadio : CheckBox
+    private lateinit var feelgoodRadio : CheckBox
+    private lateinit var animatedRadio : CheckBox
+    private lateinit var thrillerRadio : CheckBox
+    private lateinit var fantasyRadio : CheckBox
+    private lateinit var adventureRadio : CheckBox
+    private lateinit var romanceRadio : CheckBox
+    private lateinit var crimeRadio : CheckBox
+    private lateinit var horrorRadio : CheckBox
+    private lateinit var documentaryRadio : CheckBox
+    private lateinit var familyRadio : CheckBox
+    private lateinit var sportRadio : CheckBox
+    private lateinit var mysteryRadio : CheckBox
+    private lateinit var classicRadio : CheckBox
+
+
+
     private var netflixButton: ToggleButton? = null
     private var primeButton: ToggleButton? = null
     private var disneyButton: ToggleButton? = null
@@ -42,10 +67,6 @@ class FilterScreenFragment: Fragment() {
     var toYearEditText : EditText? = null
 
     var maturityEditText : EditText? = null
-
-    var actorsEditText : EditText? = null
-
-    var keywordEditText : EditText? = null
 
         override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -116,26 +137,49 @@ class FilterScreenFragment: Fragment() {
 //            genres.add(radioGroup5?.getChildAt(i) as RadioButton)
 //        }
 
-        val comedyRadio : CheckBox? = rootView?.findViewById(R.id.comedy_radio) ?: null
-        val scifiRadio : CheckBox? = rootView?.findViewById(R.id.scifi_radio) ?: null
-        val supernaturalRadio : CheckBox? = rootView?.findViewById(R.id.supernatural_radio) ?: null
-        val feelgoodRadio : CheckBox? = rootView?.findViewById(R.id.feelgood_radio) ?: null
-        val westernRadio : CheckBox? = rootView?.findViewById(R.id.western_radio) ?: null
-        val foreignRadio : CheckBox? = rootView?.findViewById(R.id.foreign_radio) ?: null
-        val actionRadio : CheckBox? = rootView?.findViewById(R.id.action_radio) ?: null
-        val dramaRadio : CheckBox? = rootView?.findViewById(R.id.drama_radio) ?: null
-        val animatedRadio : CheckBox? = rootView?.findViewById(R.id.animated_radio) ?: null
-        val thrillerRadio : CheckBox? = rootView?.findViewById(R.id.thriller_radio) ?: null
-        val fantasyRadio : CheckBox? = rootView?.findViewById(R.id.fantasy_radio) ?: null
-        val adventureRadio : CheckBox? = rootView?.findViewById(R.id.adventure_radio) ?: null
-        val romanceRadio : CheckBox? = rootView?.findViewById(R.id.romance_radio) ?: null
-        val docuRadio : CheckBox? = rootView?.findViewById(R.id.documentary_radio) ?: null
-        val crimeRadio : CheckBox? = rootView?.findViewById(R.id.crime_radio) ?: null
-        val horrorRadio : CheckBox? = rootView?.findViewById(R.id.horror_radio) ?: null
-        val familyRadio : CheckBox? = rootView?.findViewById(R.id.family_radio) ?: null
-        val sportsRadio : CheckBox? = rootView?.findViewById(R.id.sports_radio) ?: null
-        val mysteryRadio : CheckBox? = rootView?.findViewById(R.id.mystery_radio) ?: null
-        val classicRadio : CheckBox? = rootView?.findViewById(R.id.classic_radio) ?: null
+
+        comedyRadio = rootView?.findViewById(R.id.comedy_radio)!!
+
+        comedyRadio.setOnClickListener(this)
+
+        scifiRadio  = rootView?.findViewById(R.id.scifi_radio)!!
+            scifiRadio.setOnClickListener(this)
+        supernaturalRadio = rootView?.findViewById(R.id.supernatural_radio)
+            supernaturalRadio.setOnClickListener(this)
+        feelgoodRadio  = rootView?.findViewById(R.id.feelgood_radio)
+            feelgoodRadio.setOnClickListener(this)
+        westernRadio  = rootView?.findViewById(R.id.western_radio)
+            westernRadio.setOnClickListener(this)
+        foreignRadio = rootView?.findViewById(R.id.foreign_radio)
+            foreignRadio.setOnClickListener(this)
+        actionRadio = rootView?.findViewById(R.id.action_radio)
+            actionRadio.setOnClickListener(this)
+        dramaRadio  = rootView?.findViewById(R.id.drama_radio)
+            dramaRadio.setOnClickListener(this)
+        animatedRadio = rootView?.findViewById(R.id.animated_radio)
+            animatedRadio.setOnClickListener(this)
+        thrillerRadio = rootView?.findViewById(R.id.thriller_radio)
+            thrillerRadio.setOnClickListener(this)
+        fantasyRadio = rootView?.findViewById(R.id.fantasy_radio)
+            fantasyRadio.setOnClickListener(this)
+        adventureRadio = rootView?.findViewById(R.id.adventure_radio)
+            adventureRadio.setOnClickListener(this)
+        romanceRadio = rootView?.findViewById(R.id.romance_radio)
+            romanceRadio.setOnClickListener(this)
+        documentaryRadio  = rootView?.findViewById(R.id.documentary_radio)
+            documentaryRadio.setOnClickListener(this)
+        crimeRadio= rootView?.findViewById(R.id.crime_radio)
+            crimeRadio.setOnClickListener(this)
+        horrorRadio = rootView?.findViewById(R.id.horror_radio)
+            horrorRadio.setOnClickListener(this)
+        familyRadio = rootView?.findViewById(R.id.family_radio)
+            familyRadio.setOnClickListener(this)
+        sportRadio = rootView?.findViewById(R.id.sports_radio)
+            sportRadio.setOnClickListener(this)
+        mysteryRadio  = rootView?.findViewById(R.id.mystery_radio)
+            mysteryRadio.setOnClickListener(this)
+        classicRadio = rootView?.findViewById(R.id.classic_radio)
+            classicRadio.setOnClickListener(this)
 
         genres.add(comedyRadio!!)
         genres.add(scifiRadio!!)
@@ -150,14 +194,18 @@ class FilterScreenFragment: Fragment() {
         genres.add(fantasyRadio!!)
         genres.add(adventureRadio!!)
         genres.add(romanceRadio!!)
-        genres.add(docuRadio!!)
+        genres.add(documentaryRadio!!)
         genres.add(crimeRadio!!)
         genres.add(horrorRadio!!)
         genres.add(familyRadio!!)
-        genres.add(sportsRadio!!)
+        genres.add(sportRadio!!)
         genres.add(mysteryRadio!!)
         genres.add(classicRadio!!)
 
+
+        for(i in 1 .. 20){
+            genreBool.add(false)
+        }
 
 
 
@@ -207,6 +255,8 @@ class FilterScreenFragment: Fragment() {
         if(movies.isEmpty()){
             Log.d(Constants.TAG,"Movies is empty")
         }
+
+
         for(currMovie in movies){
             //Filter Streaming Service
             var goodService = false
@@ -267,18 +317,18 @@ class FilterScreenFragment: Fragment() {
             //Filter Genres
             var goodGenre = false
 
-            for(genre in genres){
-                if(genre.isChecked){
-                    var containedGenre = currMovie.genres.contains(genre.text)
-                    //Log.d(Constants.TAG,"Genre check: ${genre.text} in ${currMovie.genres} = $containedGenre")
-                    if(currMovie.genres.contains(genre.text)){
+            for(i in 0 .. genres.size-1){
+                if(genreBool[i]){
+                    var containedGenre = currMovie.genres.contains(genres[i].text)
+//                    Log.d(Constants.TAG,"Genre check: ${genres[i].text} in ${currMovie.genres} = $containedGenre")
+                    if(currMovie.genres.contains(genres[i].text)){
                         goodGenre = true || goodGenre
                     }
                 }
             }
 
             if(goodService && goodYear && goodGenre && goodRating && goodMaturity){
-//                Log.d(Constants.TAG,"Added Movie: ${currMovie.title}")
+                Log.d(Constants.TAG,"Added Movie: ${currMovie.title}")
                 goodMovies.add(currMovie)
             }
         }
@@ -337,6 +387,71 @@ class FilterScreenFragment: Fragment() {
 
     interface FilterMovieListener {
         fun getMovieFragment(movie: MovieWrapper)
+    }
+
+    override fun onClick(p0: View?) {
+        when(p0?.id){
+            R.id.comedy_radio -> {
+                genreBool[0] = comedyRadio.isChecked
+            }
+            R.id.scifi_radio -> {
+                genreBool[1] = scifiRadio.isChecked
+            }
+            R.id.supernatural_radio -> {
+                genreBool[2] = supernaturalRadio.isChecked
+            }
+            R.id.feelgood_radio -> {
+                genreBool[3] = feelgoodRadio.isChecked
+            }
+            R.id.western_radio -> {
+                genreBool[4] = westernRadio.isChecked
+            }
+            R.id.foreign_radio -> {
+                genreBool[5] = foreignRadio.isChecked
+            }
+            R.id.action_radio -> {
+                genreBool[6] = actionRadio.isChecked
+            }
+            R.id.drama_radio -> {
+                genreBool[7] = dramaRadio.isChecked
+            }
+            R.id.animated_radio -> {
+                genreBool[8] = animatedRadio.isChecked
+            }
+            R.id.thriller_radio -> {
+                genreBool[9] = thrillerRadio.isChecked
+            }
+            R.id.fantasy_radio -> {
+                genreBool[10] = fantasyRadio.isChecked
+            }
+            R.id.adventure_radio -> {
+                genreBool[11] = adventureRadio.isChecked
+            }
+            R.id.romance_radio -> {
+                genreBool[12] = romanceRadio.isChecked
+            }
+            R.id.documentary_radio -> {
+                genreBool[13] = documentaryRadio.isChecked
+            }
+            R.id.crime_radio -> {
+                genreBool[14] = crimeRadio.isChecked
+            }
+            R.id.horror_radio -> {
+                genreBool[15] = horrorRadio.isChecked
+            }
+            R.id.family_radio -> {
+                genreBool[16] = familyRadio.isChecked
+            }
+            R.id.sports_radio -> {
+                genreBool[17] = sportRadio.isChecked
+            }
+            R.id.mystery_radio -> {
+                genreBool[18] = mysteryRadio.isChecked
+            }
+            R.id.classic_radio -> {
+                genreBool[19] = classicRadio.isChecked
+            }
+        }
     }
 
 
