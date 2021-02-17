@@ -220,18 +220,28 @@ class FilterScreenFragment: Fragment(), View.OnClickListener {
 
         val searchButton: Button? = rootView?.findViewById(R.id.search_button) ?: null
 
+        val listButton: Button? = rootView?.findViewById(R.id.movie_list_button) ?: null
+
         searchButton?.setOnClickListener {
             if(movies.isEmpty()){
-                grabAllMovies()
+                grabAllMovies(true)
             } else{
-                getFilteredMovie()
+                getFilteredMovie(true)
+            }
+        }
+
+        listButton?.setOnClickListener {
+            if(movies.isEmpty()){
+                grabAllMovies(false)
+            } else{
+                getFilteredMovie(false)
             }
         }
 
         return rootView
     }
 
-    private fun grabAllMovies(){
+    private fun grabAllMovies(isRandom : Boolean){
             val moviesRef: CollectionReference = FirebaseFirestore
                     .getInstance()
                     .collection("FormattedMovies")
@@ -245,11 +255,11 @@ class FilterScreenFragment: Fragment(), View.OnClickListener {
                 querySnapshot?.documents?.forEach { documentSnapshot: DocumentSnapshot ->
                     movies.add(Movie.fromSnapshot(documentSnapshot))
                 }
-                getFilteredMovie()
+                getFilteredMovie(isRandom)
             }
     }
 
-    private fun getFilteredMovie(){
+    private fun getFilteredMovie(isRandom: Boolean){
         Log.d(Constants.TAG,"Filtering Movies")
         var goodMovies = ArrayList<Movie>()
         if(movies.isEmpty()){
@@ -332,7 +342,11 @@ class FilterScreenFragment: Fragment(), View.OnClickListener {
                 goodMovies.add(currMovie)
             }
         }
-        switchToRandomMovieDesc(goodMovies)
+        if(isRandom) {
+            switchToRandomMovieDesc(goodMovies)
+        } else {
+            switchToMovieList(goodMovies)
+        }
     }
 
     private fun switchToRandomMovieDesc(goodMovies : ArrayList<Movie>){
@@ -367,8 +381,11 @@ class FilterScreenFragment: Fragment(), View.OnClickListener {
         }
     }
 
-    private fun getAllMovies(){
-
+    private fun switchToMovieList(goodMovies : ArrayList<Movie>){
+        if(goodMovies.isNotEmpty()){
+            Log.d(Constants.TAG,"Chose Movie List")
+            listener?.getMovieList(goodMovies)
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -387,6 +404,7 @@ class FilterScreenFragment: Fragment(), View.OnClickListener {
 
     interface FilterMovieListener {
         fun getMovieFragment(movie: MovieWrapper)
+        fun getMovieList(goodMovies : ArrayList<Movie>)
     }
 
     override fun onClick(p0: View?) {

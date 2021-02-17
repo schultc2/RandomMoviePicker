@@ -446,7 +446,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="30dp"
+                android:layout_marginTop="30dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/search_button"
                 android:textSize="30sp"
@@ -454,6 +454,17 @@
                 android:textColor="@color/white"
                 android:backgroundTint="@color/silver"
                 android:layout_below="@id/maturity_rating_input"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/movie_list_button"
+                android:textSize="30sp"
+                android:text="Movies List"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/silver"
+                android:layout_below="@id/search_button"/>
         </RelativeLayout>
     </ScrollView>
 

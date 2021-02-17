@@ -12,7 +12,7 @@ import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener, FilterScreenFragment.FilterMovieListener
-        , SplashFragment.OnLoginButtonPressedListener, FavoriteMovieList.OnFavoriteSelectedListener{
+        , SplashFragment.OnLoginButtonPressedListener, FavoriteMovieList.OnFavoriteSelectedListener, MovieList.OnMovieSelectedListener{
 
     private val RC_SIGN_IN = 1
     private lateinit var authStateListener : FirebaseAuth.AuthStateListener
@@ -88,6 +88,16 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
         fragmentTransaction.commit()
     }
 
+    override fun getMovieList(goodMovies: ArrayList<Movie>) {
+        Log.d(Constants.TAG,"Segue to Movie List Screen")
+        val frag = MovieList.newInstance(goodMovies)
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
+        fragmentTransaction.addToBackStack(frag.toString())
+        fragmentTransaction.commit()
+    }
+
     private fun switchToSplashFragment() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, SplashFragment())
@@ -119,6 +129,16 @@ class MainActivity : AppCompatActivity(), StartScreenFragment.FindMovieListener,
     override fun onFavoriteSelected(movie: MovieWrapper) {
         Log.d(Constants.TAG,"Segue to Movie Desc Screen")
         val frag = MovieDescFragment.newInstance(movie,auth.currentUser!!.uid, true)
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
+        fragmentTransaction.addToBackStack(frag.toString())
+        fragmentTransaction.commit()
+    }
+
+    override fun onMovieSelected(movie: MovieWrapper) {
+        Log.d(Constants.TAG,"Segue to Movie Desc Screen")
+        val frag = MovieDescFragment.newInstance(movie,auth.currentUser!!.uid, false)
         val fragmentManager: FragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, frag, frag.toString())
