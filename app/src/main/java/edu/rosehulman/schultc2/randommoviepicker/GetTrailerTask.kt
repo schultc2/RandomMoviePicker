@@ -24,7 +24,6 @@ class GetTrailerTask(private var trailerConsumer: TrailerConsumer): AsyncTask<St
             null
         }
     }
-
     override fun onPostExecute(result: TrailerData?) {
         super.onPostExecute(result)
         trailerConsumer.onTrailerLoaded(result)

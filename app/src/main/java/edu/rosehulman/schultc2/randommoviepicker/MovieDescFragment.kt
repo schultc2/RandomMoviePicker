@@ -32,6 +32,7 @@ class MovieDescFragment() : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTa
     private var movieWrapper: MovieWrapper? = null
     private var uid: String? = null
     private var favorited : Boolean? = false
+    private lateinit var youTubePlayerView: YouTubePlayerView
 
 
     companion object {
@@ -163,8 +164,6 @@ class MovieDescFragment() : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTa
             }
             favorited = !favorited!!
         }
-
-
         return root
     }
 
@@ -187,13 +186,7 @@ class MovieDescFragment() : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTa
     }
 
     override fun onTrailerLoaded(trailer: TrailerData?) {
-//        val trailerVideoView: YouTubePlayerView? = view?.findViewById(R.id.trailer_view) ?: null
-
-        //videoId = trailer!!.items[0].id.videoID
-//        var youtubePlayerFragment : YouTubePlayerSupportFragment = YouTubePlayerSupportFragment.newInstance()
-//        youtubePlayerFragment.initialize("AIzaSyDXj7i96SWYIq_8BBP5ORoAko9NQBNo6WM", this)
-
-        val youTubePlayerView: YouTubePlayerView? = view?.findViewById(R.id.trailer_view) ?: null
+        youTubePlayerView = view?.findViewById(R.id.trailer_view)!!
         lifecycle.addObserver(youTubePlayerView!!)
 
         youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
@@ -202,7 +195,11 @@ class MovieDescFragment() : Fragment(), GetMovieTask.MovieConsumer, GetTrailerTa
                 youTubePlayer.loadVideo(videoId, 1F)
             }
         })
-//        trailerVideoView?.initialize("AIzaSyDXj7i96SWYIq_8BBP5ORoAko9NQBNo6WM", YoutubeActivity(trailer!!.items[0].id.videoID))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        youTubePlayerView.release()
     }
 
 
